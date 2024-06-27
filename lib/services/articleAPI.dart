@@ -2,17 +2,18 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
-import 'package:editor/models/article_model.dart';
+import 'package:editor/models/article.dart';
 
 class ArticleAPI {
   Future<List<Article>> getArticles() async {
-    final response = await http.get(Uri.parse('http://10.90.137.169:8000/knowledge-base/get-articles'));
-    if (response.statusCode == 200) {
-      List<dynamic> body = jsonDecode(response.body);
-      return  body.map((dynamic item) => Article.fromJson(item)).toList();
-    } else {
-      throw Exception('Failed to load articles');
-    } 
+      final response = await http.get(Uri.parse('http://10.90.137.169:8000/knowledge-base/get-articles'));
+      if (response.statusCode == 200) {
+        final List<dynamic> responseJson = jsonDecode(response.body);
+        List<Article> articles = responseJson.map((item) => Article.fromJson(item as Map<String, dynamic>)).toList();
+        return articles;
+      } else {
+        throw Exception('Failed to load articles');
+      }
   }
 
   Future<void> deleteAricle(String id) async {
@@ -24,7 +25,7 @@ class ArticleAPI {
     }
   }
 
-  Future<Article> createArticle(String title, List<String> tags, String text) async {
+  Future<Article> createArticle(String title, List<String> tags, String text, List<Map<String, dynamic>> ops) async {
     final response = await http.post(
       Uri.parse('http://10.90.137.169:8000/knowledge-base/edit/create-article'),
       headers: {'Content-Type': 'application/json'},
@@ -32,6 +33,7 @@ class ArticleAPI {
         'title': title,
         'tags': tags,
         'text': text,
+        'content': {'ops': ops}
       }),
     );
 
@@ -43,7 +45,7 @@ class ArticleAPI {
   }
 
 
-  Future<void> updateArticle(String id, String title, List<String> tags, String text) async {
+  Future<void> updateArticle(String id, String title, List<String> tags, String text, List<Map<String, dynamic>> ops) async {
     final response = await http.put(
       Uri.parse('http://10.90.137.169:8000/knowledge-base/edit/edit-article/$id'),
       headers: {'Content-Type': 'application/json'},
@@ -51,6 +53,7 @@ class ArticleAPI {
         'title': title,
         'tags': tags,
         'text': text,
+        'content': {'ops': ops}
       }),
     );
 

@@ -1,29 +1,8 @@
 import 'package:editor/services/articleAPI.dart';
 import 'package:flutter/material.dart';
-import 'package:editor/models/article_model.dart';
+import 'package:editor/models/article.dart';
 
-// Define a StateNotifier to manage the state of the articles
-// class ArticleNotifier extends StateNotifier<List<Article>> {
-//   ArticleNotifier() : super([]);
 
-//   void setArticles(List<Article> articles) {
-//     state = articles;
-//   }
-
-//   getArticles() {
-//     return state;
-//   }
-
-//   void removeArticle(String id) {
-//     state = state.where((article) => article.id != id).toList();
-//   }
-
-// }
-
-// // Create a provider for the ArticleNotifier
-// final articleProvider = StateNotifierProvider<ArticleNotifier, List<Article>>((ref) {
-//   return ArticleNotifier();
-// });
 
 class ArticleListViewModel extends ChangeNotifier{
 
@@ -41,15 +20,28 @@ class ArticleListViewModel extends ChangeNotifier{
     notifyListeners();
   }
 
-  Future<void> createArticle(String title, List<String> tags, String text) async {
-    Article article = await ArticleAPI().createArticle(title, tags, text);
+  Future<void> createArticle(String title, List<String> tags, String text, List<Map<String, dynamic>> ops) async {
+    Article article = await ArticleAPI().createArticle(title, tags, text, ops);
     articles.add(ArticleViewModel(article: article));
     notifyListeners();
   }
 
-  Future<void> updateArticle(String id, String title, List<String> tags, String text) async {
-    await ArticleAPI().updateArticle(id, title, tags, text);
-    articles = articles.map((article) => article.id == id ? ArticleViewModel(article: Article(id: id, title: title, tags: tags, text: text)) : article).toList();
+  Future<void> updateArticle(String id, String title, List<String> tags, String text, List<Map<String, dynamic>> ops) async {
+    await ArticleAPI().updateArticle(id, title, tags, text, ops);
+    articles = articles.map((articleVM) {
+      if (articleVM.id == id) {
+        Article updatedArticle = Article(
+          id: id,
+          title: title,
+          tags: tags,
+          text: text,
+          content: Content(ops: ops.map((op) => ContentItem.fromJson(op)).toList()),
+        );
+        return ArticleViewModel(article: updatedArticle);
+      } else {
+        return articleVM;
+      }
+    }).toList();
     notifyListeners();
   }
 
@@ -66,5 +58,6 @@ class ArticleViewModel {
   String get text => article.text;
   String get id => article.id;
   List<String> get tags => article.tags;
+  get content => article.content;
 }
 

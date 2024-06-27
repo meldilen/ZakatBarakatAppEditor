@@ -24,12 +24,15 @@ class _EditArticlePageState extends State<EditArticlePage> {
     _titleController = TextEditingController(text: widget.article.title);
     _tagControllers = widget.article.tags.map((tag) => TextEditingController(text: tag)).toList();
 
-    final doc = quill.Document();
-    doc.insert(0, widget.article.text);
+    final jsonContent = widget.article.content.toJson();
+    final ops = jsonContent['ops'] as List<dynamic>;
+
     _quillController = quill.QuillController(
-      document: doc,
+      document: quill.Document.fromJson(ops),
       selection: const TextSelection.collapsed(offset: 0),
     );
+
+    
   }
 
   @override
@@ -56,8 +59,9 @@ class _EditArticlePageState extends State<EditArticlePage> {
     final title = _titleController.text;
     final tags = _tagControllers.map((controller) => controller.text).toList();
     final text = _quillController.document.toPlainText();
+    final ops = _quillController.document.toDelta().toJson();
     try{
-      await context.read<ArticleListViewModel>().updateArticle(widget.article.id, title, tags, text);
+      await context.read<ArticleListViewModel>().updateArticle(widget.article.id, title, tags, text, ops);
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Article updated successfully!')),
       ); 

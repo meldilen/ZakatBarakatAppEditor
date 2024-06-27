@@ -40,9 +40,10 @@ class _CreateArticlePageState extends State<CreateArticlePage> {
     final title = _titleController.text;
     final tags = _tagControllers.map((controller) => controller.text).toList();
     final text = _quillController.document.toPlainText();
+    final ops = _quillController.document.toDelta().toJson();
 
     try{
-      await context.read<ArticleListViewModel>().createArticle(title, tags, text);
+      await context.read<ArticleListViewModel>().createArticle(title, tags, text, ops);
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Article created successfully!')),
       );
