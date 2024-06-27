@@ -1,17 +1,17 @@
-import 'package:editor/providers/qna_provider.dart';
+import 'package:editor/providers/fund_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class QuestionWidget extends StatefulWidget {
-  final QuestionViewModel question;
+class FundWidget extends StatefulWidget {
+  final FundViewModel fund;
 
-  QuestionWidget({required this.question});
+  FundWidget({required this.fund});
 
   @override
-  _QuestionWidgetState createState() => _QuestionWidgetState();
+  _FundWidgetState createState() => _FundWidgetState();
 }
 
-class _QuestionWidgetState extends State<QuestionWidget> {
+class _FundWidgetState extends State<FundWidget> {
 
   @override
   Widget build(BuildContext context) {
@@ -23,12 +23,12 @@ class _QuestionWidgetState extends State<QuestionWidget> {
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(widget.question.questionText),
+            Text(widget.fund.name),
             IconButton(onPressed: () {
-              Navigator.pushNamed(context, '/question_editing', arguments: widget.question);
+              Navigator.pushNamed(context, '/fund_editing', arguments: widget.fund);
             }, icon: Icon(Icons.edit)),
             IconButton(onPressed: () {
-              deleteQuestion(widget.question.id, context);
+              deleteFund(widget.fund.id, context);
             }, icon: Icon(Icons.delete)),
           ],
         ),
@@ -42,16 +42,16 @@ class _QuestionWidgetState extends State<QuestionWidget> {
   }
 
 
-  void deleteQuestion(String id, BuildContext context) async {
+  void deleteFund(String id, BuildContext context) async {
     try{
-      await context.read<QuestionListViewModel>().removeQuestion(id);
+      await context.read<FundListViewModel>().removeFund(id);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Question deleted successfully!')),
+        const SnackBar(content: Text('Fund deleted successfully!')),
       );
     }catch(e){
       print(e);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to delete question')),
+        const SnackBar(content: Text('Failed to delete fund')),
       );
     }
   }

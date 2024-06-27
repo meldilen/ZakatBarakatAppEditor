@@ -49,9 +49,20 @@ class _HomePageState extends ConsumerState<HomePage> {
                 alignment: AlignmentDirectional(0, 0),
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, '/article_list');
+                    Navigator.pushNamed(context, '/question_list');
                   },
                   child: const Text('Q&As'),
+                )
+              ),
+            ),
+            Expanded(
+              child: Align(
+                alignment: AlignmentDirectional(0, 0),
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/fund_list');
+                  },
+                  child: const Text('Funds'),
                 )
               ),
             ),

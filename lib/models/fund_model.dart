@@ -13,7 +13,7 @@ class Fund{
       name: json['name'],
       link: json['link'],
       description: json['description'],
-      logoLink: json['logoLink'],
+      logoLink: json['logo_link'],
     );
   }
 }

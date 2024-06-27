@@ -37,8 +37,8 @@ class QuestionViewModel {
 
   QuestionViewModel({required this.question});
 
-  get id => question.id;
-  get questionText => question.question;
-  get answerText => question.answer;
-  get tags => question.tags;
+  String get id => question.id;
+  String get questionText => question.question;
+  String get answerText => question.answer;
+  List<String> get tags => question.tags;
 }

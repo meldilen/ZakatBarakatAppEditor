@@ -35,9 +35,9 @@ class FundViewModel {
   
   FundViewModel({required this.fund});
 
-  get id => fund.id;
-  get name => fund.name;
-  get link => fund.link;
-  get description => fund.description;
-  get logoLink => fund.logoLink;
+  String get id => fund.id;
+  String get name => fund.name;
+  String get link => fund.link;
+  String get description => fund.description;
+  String get logoLink => fund.logoLink;
 }

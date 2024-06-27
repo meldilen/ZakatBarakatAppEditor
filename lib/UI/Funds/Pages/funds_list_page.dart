@@ -1,38 +1,40 @@
+import 'package:editor/UI/Funds/widgets/fund_list.dart';
 import 'package:editor/UI/QAs/Pages/Widgets/question_list.dart';
+import 'package:editor/providers/fund_provider.dart';
 import 'package:editor/providers/qna_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class QuestionListPage extends StatefulWidget {
-  const QuestionListPage({super.key});
+class FundListPage extends StatefulWidget {
+  const FundListPage({super.key});
 
   @override
-  _QuestionListPageState createState() => _QuestionListPageState();
+  _FundListPageState createState() => _FundListPageState();
 }
 
-class _QuestionListPageState extends State<QuestionListPage> {
+class _FundListPageState extends State<FundListPage> {
 
 
   @override
   void initState() {
     super.initState();
-    Provider.of<QuestionListViewModel>(context, listen: false).fetchQuestions();
+    Provider.of<FundListViewModel>(context, listen: false).fetchFunds();
   }
 
-  Widget _buildUI(List<QuestionViewModel> questions) {
-    if(questions.isEmpty){
-    return const Center(child: Text('No questions found'));
+  Widget _buildUI(List<FundViewModel> funds) {
+    if(funds.isEmpty){
+    return const Center(child: Text('No funds found'));
   }else{
-    return QuestionList(questions: questions);
+    return FundList(funds: funds);
   }
   }
 
 
   Widget _buildButton(){
     return FloatingActionButton(
-        backgroundColor: Color.fromARGB(255, 206, 72, 10),
+        backgroundColor: Color.fromARGB(255, 24, 37, 150),
         onPressed: () {
-          Navigator.pushNamed(context, '/question_creation');
+          Navigator.pushNamed(context, '/fund_creation');
         },
         child: const Icon(Icons.add),
       );
@@ -41,9 +43,9 @@ class _QuestionListPageState extends State<QuestionListPage> {
 
   AppBar _buildAppBar() {
     return AppBar(
-        backgroundColor: Color.fromARGB(255, 206, 72, 10),
+        backgroundColor: Color.fromARGB(255, 24, 37, 150),
         title: const Text(
-          'Questions', 
+          'Funds', 
           style: TextStyle(
             fontSize: 22, 
             fontWeight: FontWeight.bold, 
@@ -57,11 +59,10 @@ class _QuestionListPageState extends State<QuestionListPage> {
 
   @override
   Widget build(BuildContext context) {
-    var questions = context.watch<QuestionListViewModel>().questions;
-
+    var funds = context.watch<FundListViewModel>().funds;
     return Scaffold(
       appBar: _buildAppBar(),
-      body: _buildUI(questions),
+      body: _buildUI(funds),
       floatingActionButton: _buildButton(),
     );
   }

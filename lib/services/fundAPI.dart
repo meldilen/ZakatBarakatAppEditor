@@ -8,7 +8,8 @@ class FundAPI{
     final response = await http.get(Uri.parse('http://10.90.137.169:8000/funds/get-funds'));
     if (response.statusCode == 200) {
       List<dynamic> body = jsonDecode(response.body);
-      return  body.map((dynamic item) => Fund.fromJson(item)).toList();
+      List<Fund> funds = body.map((dynamic item) => Fund.fromJson(item)).toList();
+      return  funds;
     } else {
       throw Exception('Failed to load funds');
     }
