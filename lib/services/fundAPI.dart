@@ -26,12 +26,12 @@ class FundAPI{
 
   Future<Fund> createFund(String name, String link, String description, String logoLink) async {
     final response = await http.post(
-      Uri.parse('http://10.90.137.169:8000/funds/edit/create-fund'),
+      Uri.parse('http://10.90.137.169:8000/funds/edit/create-fund/'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
         'name': name,
         'description': description,
-        'logoLink': logoLink,
+        'logo_link': logoLink,
         'link': link,
       }),
     );
@@ -50,7 +50,7 @@ class FundAPI{
       body: jsonEncode({
         'name': name,
         'description': description,
-        'logoLink': logoLink,
+        'logo_link': logoLink,
         'link': link,
     }));
 
