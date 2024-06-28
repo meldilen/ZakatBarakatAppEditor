@@ -5,8 +5,10 @@ import 'package:http/http.dart' as http;
 import 'package:editor/models/article.dart';
 
 class ArticleAPI {
+
+  final BaseUrl = 'http://158.160.153.243:8000';
   Future<List<Article>> getArticles() async {
-      final response = await http.get(Uri.parse('http://10.90.137.169:8000/knowledge-base/get-articles'));
+      final response = await http.get(Uri.parse('$BaseUrl/knowledge-base/get-articles'));
       if (response.statusCode == 200) {
         final List<dynamic> responseJson = jsonDecode(response.body);
         List<Article> articles = responseJson.map((item) => Article.fromJson(item as Map<String, dynamic>)).toList();
@@ -17,7 +19,7 @@ class ArticleAPI {
   }
 
   Future<void> deleteAricle(String id) async {
-    final response = await http.delete(Uri.parse('http://10.90.137.169:8000/knowledge-base/edit/delete-article/$id'));
+    final response = await http.delete(Uri.parse('$BaseUrl/knowledge-base/edit/delete-article/$id'));
     if (response.statusCode == 200) {
       return;
     } else {
@@ -27,7 +29,7 @@ class ArticleAPI {
 
   Future<Article> createArticle(String title, List<String> tags, String text, List<Map<String, dynamic>> ops) async {
     final response = await http.post(
-      Uri.parse('http://10.90.137.169:8000/knowledge-base/edit/create-article'),
+      Uri.parse('$BaseUrl/knowledge-base/edit/create-article'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
         'title': title,
@@ -47,7 +49,7 @@ class ArticleAPI {
 
   Future<void> updateArticle(String id, String title, List<String> tags, String text, List<Map<String, dynamic>> ops) async {
     final response = await http.put(
-      Uri.parse('http://10.90.137.169:8000/knowledge-base/edit/edit-article/$id'),
+      Uri.parse('$BaseUrl/knowledge-base/edit/edit-article/$id'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
         'title': title,

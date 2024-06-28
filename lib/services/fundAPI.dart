@@ -4,8 +4,10 @@ import 'package:editor/models/fund_model.dart';
 import 'package:http/http.dart' as http;
 
 class FundAPI{
+  final BaseUrl = 'http://158.160.153.243:8000';
+
   Future<List<Fund>> getFunds() async {
-    final response = await http.get(Uri.parse('http://10.90.137.169:8000/funds/get-funds'));
+    final response = await http.get(Uri.parse('$BaseUrl/funds/get-funds'));
     if (response.statusCode == 200) {
       List<dynamic> body = jsonDecode(response.body);
       List<Fund> funds = body.map((dynamic item) => Fund.fromJson(item)).toList();
@@ -16,7 +18,7 @@ class FundAPI{
   }
 
   Future<void> deleteFund(String id) async {
-    final response = await http.delete(Uri.parse('http://10.90.137.169:8000/funds/edit/delete-fund/$id'));
+    final response = await http.delete(Uri.parse('$BaseUrl/funds/edit/delete-fund/$id'));
     if (response.statusCode == 200) {
       return;
     } else {
@@ -26,7 +28,7 @@ class FundAPI{
 
   Future<Fund> createFund(String name, String link, String description, String logoLink) async {
     final response = await http.post(
-      Uri.parse('http://10.90.137.169:8000/funds/edit/create-fund/'),
+      Uri.parse('$BaseUrl/funds/edit/create-fund/'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
         'name': name,
@@ -45,7 +47,7 @@ class FundAPI{
 
   Future<void> editFund(String id, String name, String link, String description, String logoLink) async {
     final response = await http.put(
-      Uri.parse('http://10.90.137.169:8000/funds/edit/edit-fund/$id'),
+      Uri.parse('$BaseUrl/funds/edit/edit-fund/$id'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
         'name': name,

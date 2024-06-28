@@ -3,8 +3,10 @@ import 'package:editor/models/questions_model.dart';
 import 'package:http/http.dart' as http;
 
 class QnaAPI {
+  final BaseUrl = 'http://158.160.153.243:8000';
+
   Future<List<Question>> getQuestions() async {
-    final response = await http.get(Uri.parse('http://10.90.137.169:8000/qna/get-questions'));
+    final response = await http.get(Uri.parse('$BaseUrl/qna/get-questions'));
     if (response.statusCode == 200) {
       List<dynamic> body = jsonDecode(response.body);
       return  body.map((dynamic item) => Question.fromJson(item)).toList();
@@ -15,7 +17,7 @@ class QnaAPI {
 
 
   Future<void> deleteQuestion(String id) async {
-    final response = await http.delete(Uri.parse("http://10.90.137.169:8000/qna/edit/delete-question/$id"));
+    final response = await http.delete(Uri.parse("$BaseUrl/qna/edit/delete-question/$id"));
     if (response.statusCode == 200) {
       return;
     } else {
@@ -25,7 +27,7 @@ class QnaAPI {
 
   Future<Question> createQuestion(String question, String answer, List<String> tags) async {
     final response = await http.post(
-      Uri.parse('http://10.90.137.169:8000/qna/edit/create-question'),
+      Uri.parse('$BaseUrl/qna/edit/create-question'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
         'question': question,
@@ -44,7 +46,7 @@ class QnaAPI {
 
   Future<void> editQuestion(String id, String question, String answer, List<String> tags) async {
     final response = await http.put(
-      Uri.parse('http://10.90.137.169:8000/qna/edit/edit-question/$id'),
+      Uri.parse('$BaseUrl/qna/edit/edit-question/$id'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
         'question': question,
