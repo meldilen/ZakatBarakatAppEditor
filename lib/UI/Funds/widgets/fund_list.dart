@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 class FundList extends StatefulWidget {
   final List<FundViewModel> funds;
 
-  FundList({required this.funds});
+  FundList({super.key, required this.funds});
 
   @override
   _FundListState createState() => _FundListState();

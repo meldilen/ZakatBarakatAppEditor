@@ -1,5 +1,4 @@
 import 'package:editor/providers/fund_provider.dart';
-import 'package:editor/providers/qna_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart' as quill;
 import 'package:flutter_quill/flutter_quill.dart';
@@ -8,6 +7,8 @@ import 'package:flutter_quill/flutter_quill.dart';
 import 'package:provider/provider.dart';
 
 class CreateFundPage extends StatefulWidget {
+  const CreateFundPage({super.key});
+
   @override
   _CreateFundPageState createState() => _CreateFundPageState();
 }

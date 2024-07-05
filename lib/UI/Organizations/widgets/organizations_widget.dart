@@ -1,17 +1,17 @@
-import 'package:editor/providers/article_provider.dart';
+import 'package:editor/providers/organization_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class ArticleWidget extends StatefulWidget {
-  final ArticleViewModel article;
+class OrganizationWidget extends StatefulWidget {
+  final OrganizationViewModel organization;
 
-  ArticleWidget({super.key, required this.article});
+  OrganizationWidget({super.key, required this.organization});
 
   @override
-  _ArticleWidgetState createState() => _ArticleWidgetState();
+  _OrganizationWidgetState createState() => _OrganizationWidgetState();
 }
 
-class _ArticleWidgetState extends State<ArticleWidget> {
+class _OrganizationWidgetState extends State<OrganizationWidget> {
 
   @override
   Widget build(BuildContext context) {
@@ -23,12 +23,12 @@ class _ArticleWidgetState extends State<ArticleWidget> {
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(widget.article.title),
+            Text(widget.organization.name),
             IconButton(onPressed: () {
-              Navigator.pushNamed(context, '/article_editing', arguments: widget.article);
+              Navigator.pushNamed(context, '/organization_editing', arguments: widget.organization);
             }, icon: Icon(Icons.edit)),
             IconButton(onPressed: () {
-              deleteArticle(widget.article.id, context);
+              deleteOrganization(widget.organization.id, context);
             }, icon: Icon(Icons.delete)),
           ],
         ),
@@ -42,16 +42,16 @@ class _ArticleWidgetState extends State<ArticleWidget> {
   }
 
 
-  void deleteArticle(String id, BuildContext context) async {
+  void deleteOrganization(String id, BuildContext context) async {
     try{
-      await context.read<ArticleListViewModel>().removeArticle(id);
+      await context.read<OrganisationListViewModel>().removeOrganization(id);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Article deleted successfully!')),
+        const SnackBar(content: Text('Organization deleted successfully!')),
       );
     }catch(e){
       print(e);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to delete article')),
+        const SnackBar(content: Text('Failed to delete organization')),
       );
     }
   }

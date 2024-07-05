@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 class ArticleList extends StatefulWidget {
   final List<ArticleViewModel> articles;
 
-  ArticleList({required this.articles});
+  ArticleList({super.key, required this.articles});
 
   @override
   _ArticleListState createState() => _ArticleListState();

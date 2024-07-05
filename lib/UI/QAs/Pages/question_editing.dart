@@ -1,4 +1,3 @@
-import 'package:editor/providers/article_provider.dart';
 import 'package:editor/providers/qna_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart' as quill;
@@ -8,7 +7,7 @@ import 'package:provider/provider.dart';
 class EditQuestionPage extends StatefulWidget {
   final QuestionViewModel question;
 
-  EditQuestionPage({required this.question});
+  EditQuestionPage({super.key, required this.question});
 
   @override
   _EditQuestionPageState createState() => _EditQuestionPageState();

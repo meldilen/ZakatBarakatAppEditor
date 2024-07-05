@@ -7,6 +7,8 @@ import 'package:flutter_quill/flutter_quill.dart';
 import 'package:provider/provider.dart';
 
 class CreateQuestionPage extends StatefulWidget {
+  const CreateQuestionPage({super.key});
+
   @override
   _CreateQuestionPageState createState() => _CreateQuestionPageState();
 }

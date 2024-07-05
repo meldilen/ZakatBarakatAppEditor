@@ -1,26 +1,46 @@
-import 'package:editor/providers/article_provider.dart';
+import 'package:editor/providers/news_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart' as quill;
 import 'package:flutter_quill/flutter_quill.dart';
-
-
 import 'package:provider/provider.dart';
 
-class CreateArticlePage extends StatefulWidget {
-  const CreateArticlePage({super.key});
+class EditNewsArticlePage extends StatefulWidget {
+  final NewsViewModel newsArticle;
+
+  EditNewsArticlePage({super.key, required this.newsArticle});
 
   @override
-  _CreateArticlePageState createState() => _CreateArticlePageState();
+  _EditNewsArticlePageState createState() => _EditNewsArticlePageState();
 }
 
-class _CreateArticlePageState extends State<CreateArticlePage> {
-  final _titleController = TextEditingController();
-  final _tagControllers = <TextEditingController>[TextEditingController()];
-  final quill.QuillController _quillController = quill.QuillController.basic();
+class _EditNewsArticlePageState extends State<EditNewsArticlePage> {
+  late final TextEditingController _nameController;
+  late final List<TextEditingController> _tagControllers;
+  late final TextEditingController _sourceLinkController;
+  late final TextEditingController _imageLinkController;
+  late final quill.QuillController _quillController;
+
+  @override
+  void initState() {
+    super.initState();
+    _nameController = TextEditingController(text: widget.newsArticle.name);
+    _sourceLinkController = TextEditingController(text: widget.newsArticle.sourceLink);
+    _imageLinkController = TextEditingController(text: widget.newsArticle.imageLink);
+    _tagControllers = widget.newsArticle.tags.map((tag) => TextEditingController(text: tag)).toList();
+
+    final doc = quill.Document();
+    doc.insert(0, widget.newsArticle.body);
+    _quillController = quill.QuillController(
+      document: doc,
+      selection: const TextSelection.collapsed(offset: 0),
+    );
+  }
 
   @override
   void dispose() {
-    _titleController.dispose();
+    _nameController.dispose();
+    _sourceLinkController.dispose();
+    _imageLinkController.dispose();
     _tagControllers.forEach((controller) => controller.dispose());
     _quillController.dispose();
     super.dispose();
@@ -38,20 +58,21 @@ class _CreateArticlePageState extends State<CreateArticlePage> {
     });
   }
 
-  void _createArticle() async {
-    final title = _titleController.text;
+  void _updateNewsArticle() async {
+    final name = _nameController.text;
     final tags = _tagControllers.map((controller) => controller.text).toList();
-    final text = _quillController.document.toPlainText();
-    final ops = _quillController.document.toDelta().toJson();
+    final body = _quillController.document.toPlainText();
+    final image_link = _imageLinkController.text;
+    final source_link = _sourceLinkController.text;
 
     try{
-      await context.read<ArticleListViewModel>().createArticle(title, tags, text, ops);
+      await context.read<NewsListViewModel>().updateNewsArticle(widget.newsArticle.id ,name, body, image_link, source_link, tags);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Article created successfully!')),
+        const SnackBar(content: Text('News article updated successfully!')),
       );
     }catch(e){
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to create article')),
+        const SnackBar(content: Text('Failed to update news article')),
       );
       print(e);
     }
@@ -61,14 +82,28 @@ class _CreateArticlePageState extends State<CreateArticlePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Create Article'),
+        title: const Text('Update News Article'),
       ),
       body: Column(
             children: [
               TextField(
-                controller: _titleController,
+                controller: _nameController,
                 decoration: const InputDecoration(
-                  labelText: 'Title',
+                  labelText: 'Name',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              TextField(
+                controller: _imageLinkController,
+                decoration: const InputDecoration(
+                  labelText: 'Image Link',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              TextField(
+                controller: _sourceLinkController,
+                decoration: const InputDecoration(
+                  labelText: 'Source Link',
                   border: OutlineInputBorder(),
                 ),
               ),
@@ -100,11 +135,6 @@ class _CreateArticlePageState extends State<CreateArticlePage> {
               ),
               const SizedBox(height: 16),
               const SizedBox(height: 16),
-              QuillToolbar.simple(
-                configurations: QuillSimpleToolbarConfigurations(
-                controller: _quillController,  
-                ),
-              ),
               Expanded(
                 child: QuillEditor.basic(
                 configurations: QuillEditorConfigurations(
@@ -114,7 +144,7 @@ class _CreateArticlePageState extends State<CreateArticlePage> {
               ),
               const SizedBox(height: 16),
               ElevatedButton(
-                onPressed: () => _createArticle(),
+                onPressed: () => _updateNewsArticle(),
                 child: const Text('Save'),
               ),
               ElevatedButton(

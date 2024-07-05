@@ -1,6 +1,4 @@
-import 'package:editor/providers/article_provider.dart';
 import 'package:editor/providers/fund_provider.dart';
-import 'package:editor/providers/qna_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart' as quill;
 import 'package:flutter_quill/flutter_quill.dart';
@@ -9,7 +7,7 @@ import 'package:provider/provider.dart';
 class EditFundPage extends StatefulWidget {
   final FundViewModel fund;
 
-  EditFundPage({required this.fund});
+  EditFundPage({super.key, required this.fund});
 
   @override
   _EditFundPageState createState() => _EditFundPageState();

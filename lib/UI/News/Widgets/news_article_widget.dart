@@ -1,17 +1,17 @@
-import 'package:editor/providers/article_provider.dart';
+import 'package:editor/providers/news_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class ArticleWidget extends StatefulWidget {
-  final ArticleViewModel article;
+class NewsWidget extends StatefulWidget {
+  final NewsViewModel newsArticle;
 
-  ArticleWidget({super.key, required this.article});
+  NewsWidget({super.key, required this.newsArticle});
 
   @override
-  _ArticleWidgetState createState() => _ArticleWidgetState();
+  _NewsWidgetState createState() => _NewsWidgetState();
 }
 
-class _ArticleWidgetState extends State<ArticleWidget> {
+class _NewsWidgetState extends State<NewsWidget> {
 
   @override
   Widget build(BuildContext context) {
@@ -23,12 +23,12 @@ class _ArticleWidgetState extends State<ArticleWidget> {
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(widget.article.title),
+            Text(widget.newsArticle.name),
             IconButton(onPressed: () {
-              Navigator.pushNamed(context, '/article_editing', arguments: widget.article);
+              Navigator.pushNamed(context, '/news_editing', arguments: widget.newsArticle);
             }, icon: Icon(Icons.edit)),
             IconButton(onPressed: () {
-              deleteArticle(widget.article.id, context);
+              deleteNewsArticle(widget.newsArticle.id, context);
             }, icon: Icon(Icons.delete)),
           ],
         ),
@@ -42,16 +42,16 @@ class _ArticleWidgetState extends State<ArticleWidget> {
   }
 
 
-  void deleteArticle(String id, BuildContext context) async {
+  void deleteNewsArticle(String id, BuildContext context) async {
     try{
-      await context.read<ArticleListViewModel>().removeArticle(id);
+      await context.read<NewsListViewModel>().removeNewsArticle(id);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Article deleted successfully!')),
+        const SnackBar(content: Text('News article deleted successfully!')),
       );
     }catch(e){
       print(e);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to delete article')),
+        const SnackBar(content: Text('Failed to delete news article')),
       );
     }
   }

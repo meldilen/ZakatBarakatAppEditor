@@ -1,7 +1,5 @@
 import 'package:editor/UI/Funds/widgets/fund_list.dart';
-import 'package:editor/UI/QAs/Pages/Widgets/question_list.dart';
 import 'package:editor/providers/fund_provider.dart';
-import 'package:editor/providers/qna_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

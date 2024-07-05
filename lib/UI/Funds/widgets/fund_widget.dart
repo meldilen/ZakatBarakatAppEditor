@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 class FundWidget extends StatefulWidget {
   final FundViewModel fund;
 
-  FundWidget({required this.fund});
+  FundWidget({super.key, required this.fund});
 
   @override
   _FundWidgetState createState() => _FundWidgetState();

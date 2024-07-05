@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 class QuestionList extends StatefulWidget {
   final List<QuestionViewModel> questions;
 
-  QuestionList({required this.questions});
+  QuestionList({super.key, required this.questions});
 
   @override
   _QuestionListState createState() => _QuestionListState();

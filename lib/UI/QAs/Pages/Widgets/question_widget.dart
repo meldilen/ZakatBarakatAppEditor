@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 class QuestionWidget extends StatefulWidget {
   final QuestionViewModel question;
 
-  QuestionWidget({required this.question});
+  QuestionWidget({super.key, required this.question});
 
   @override
   _QuestionWidgetState createState() => _QuestionWidgetState();

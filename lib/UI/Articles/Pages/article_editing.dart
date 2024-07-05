@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 class EditArticlePage extends StatefulWidget {
   final ArticleViewModel article;
 
-  EditArticlePage({required this.article});
+  EditArticlePage({super.key, required this.article});
 
   @override
   _EditArticlePageState createState() => _EditArticlePageState();
