@@ -1,6 +1,6 @@
 variables:
   DOCKER_TLS_CERTDIR: "/certs"
-  APP: "my-app"
+  APP: "editor"
 
 stages:
   - build
