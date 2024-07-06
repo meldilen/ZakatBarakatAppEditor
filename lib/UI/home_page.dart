@@ -88,6 +88,17 @@ class _HomePageState extends ConsumerState<HomePage> {
                 )
               ),
             ),
+            Expanded(
+              child: Align(
+                alignment: AlignmentDirectional(0, 0),
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/request_list');
+                  },
+                  child: const Text('Requests'),
+                )
+              ),
+            ),
           ],
         ),
       ),

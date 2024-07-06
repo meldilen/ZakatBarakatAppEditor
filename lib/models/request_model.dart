@@ -7,7 +7,7 @@ class RequestModel{
   factory RequestModel.fromJson(Map<String, dynamic> json) {
     return RequestModel(
       id: json['id'],
-      requestText: json['request_text'],
+      requestText: json['requestText'],
     );
   }
 }
