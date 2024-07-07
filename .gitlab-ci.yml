@@ -1,54 +1,45 @@
+
 stages:
-  - build
   - test
 
-variables:
-  DOCKER_TLS_CERTDIR: "/certs"
-  APP: "zakatbarakateditor"
-
-build:
-  stage: build
-  image: docker:24.0.5
-  services:
-    - docker:24.0.5-dind
-  before_script:
-    - docker info
-    - echo "$HARBOR_PASSWORD" | docker login -u "$HARBOR_USERNAME" "$HARBOR_HOST" --password-stdin
-  script:
-    - docker build -t my-docker-image .
-    - docker tag my-docker-image $HARBOR_HOST/$HARBOR_PROJECT/$APP:$CI_JOB_ID
-    - docker tag my-docker-image $HARBOR_HOST/$HARBOR_PROJECT/$APP:latest
-    - docker push $HARBOR_HOST/$HARBOR_PROJECT/$APP:$CI_JOB_ID
-    - docker push $HARBOR_HOST/$HARBOR_PROJECT/$APP:latest
-
-
-
-container_scanning:
+code_quality:
   stage: test
-  image:
-    name: $HARBOR_HOST/docker-hub-cache/aquasec/trivy:latest
-    entrypoint: [""]
-  variables:
-    GIT_STRATEGY: none
-    TRIVY_USERNAME: "$HARBOR_USERNAME"
-    TRIVY_PASSWORD: "$HARBOR_PASSWORD"
-    TRIVY_AUTH_URL: "$HARBOR_HOST"
-    FULL_IMAGE_NAME: $HARBOR_HOST/$HARBOR_PROJECT/$APP:latest
+  image: "ghcr.io/cirruslabs/flutter:3.22.2"
+  before_script:
+    - flutter pub global activate dart_code_metrics
+    - export PATH="$PATH:$HOME/.pub-cache/bin"
   script:
-    - trivy --version
-    - time trivy image --clear-cache
-    - time trivy image --download-db-only --no-progress --cache-dir .trivycache/
-    - time trivy image --exit-code 0 --cache-dir .trivycache/ --no-progress --format template --template "@/contrib/gitlab.tpl" --output "$CI_PROJECT_DIR/gl-container-scanning-report.json" "$FULL_IMAGE_NAME"
-    - time trivy image --exit-code 0 --cache-dir .trivycache/ --no-progress "$FULL_IMAGE_NAME"
-    - time trivy image --exit-code 1 --cache-dir .trivycache/ --severity CRITICAL --no-progress "$FULL_IMAGE_NAME"
-  cache:
-    paths:
-      - .trivycache/
+    - metrics lib -r codeclimate  > gl-code-quality-report.json
   artifacts:
-    when: always
     reports:
-      container_scanning: gl-container-scanning-report.json
-  tags:
-    - docker
-  needs:
-    - build
+      codequality: gl-code-quality-report.json
+
+test:
+  stage: test
+  image: "ghcr.io/cirruslabs/flutter:3.22.2"
+  before_script:
+    - flutter pub global activate junitreport
+    - export PATH="$PATH:$HOME/.pub-cache/bin"
+  script:
+    - flutter test --machine --coverage | tojunit -o report.xml
+    - lcov --summary coverage/lcov.info
+    - genhtml coverage/lcov.info --output=coverage
+  coverage: '/lines\.*: \d+\.\d+\%/'
+  artifacts:
+    name: coverage
+    paths:
+      - $CI_PROJECT_DIR/coverage
+    reports:
+      junit: report.xml
+
+flutter test:
+  stage: test
+  image: "ghcr.io/cirruslabs/flutter:3.22.2"
+  script: 
+    - flutter test test
+
+flutter analyze:
+  stage: test
+  image: "ghcr.io/cirruslabs/flutter:3.22.2"
+  script: 
+    - flutter analyze
