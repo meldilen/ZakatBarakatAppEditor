@@ -37,3 +37,9 @@ flutter test:
   image: "ghcr.io/cirruslabs/flutter:3.22.2"
   script: 
     - flutter test test
+
+flutter analyze:
+  stage: test
+  image: "ghcr.io/cirruslabs/flutter:3.22.2"
+  script: 
+    - flutter analyze
