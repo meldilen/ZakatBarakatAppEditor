@@ -5,6 +5,9 @@ variables:
 stages:
   - build
   - test
+  - static
+  - lint
+  - deploy
 
 build:
   stage: build
@@ -50,3 +53,36 @@ container_scanning:
     - docker
   needs:
     - build
+
+flutter_testing:
+  stage: test
+  interruptible: false
+  before_script:
+    - flutter clean
+    - flutter pub get
+    - flutter pub run build_runner build --delete-conflicting-outputs
+  script:
+    - flutter test test
+
+dart-metrics-analyze:
+  stage: static
+  interruptible: true
+  before_script:
+    - flutter pub get
+  script:
+    - flutter pub run dart_code_metrics:metrics analyze --fatal-style --fatal-performance --no-fatal-warnings --reporter=console lib
+
+Flutter analyze:
+  stage: lint
+  script:
+    - flutter analyze
+
+
+webBuild:
+  stage: deploy
+  script:
+    - flutter build web
+  artifacts:
+    paths:
+      - build/web
+
