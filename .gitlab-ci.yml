@@ -31,3 +31,9 @@ test:
       - $CI_PROJECT_DIR/coverage
     reports:
       junit: report.xml
+
+flutter test:
+  stage: test
+  image: "ghcr.io/cirruslabs/flutter:3.22.2"
+  script: 
+    - flutter test test
