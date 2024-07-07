@@ -1,9 +1,11 @@
 
 stages:
   - test
+  - analyzing
+  - coverage
 
 code_quality:
-  stage: test
+  stage: analyzing
   image: "ghcr.io/cirruslabs/flutter:3.22.2"
   before_script:
     - flutter pub global activate dart_code_metrics
@@ -15,7 +17,7 @@ code_quality:
       codequality: gl-code-quality-report.json
 
 test:
-  stage: test
+  stage: coverage
   image: "ghcr.io/cirruslabs/flutter:3.22.2"
   before_script:
     - flutter pub global activate junitreport
@@ -39,7 +41,7 @@ flutter test:
     - flutter test test
 
 flutter analyze:
-  stage: test
+  stage: analyzing
   image: "ghcr.io/cirruslabs/flutter:3.22.2"
   script: 
     - flutter analyze
