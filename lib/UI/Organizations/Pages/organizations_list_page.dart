@@ -16,6 +16,8 @@ class _OrganizationsListPageState extends State<OrganizationsListPage> {
     super.initState();
     Provider.of<OrganisationListViewModel>(context, listen: false)
         .fetchOrganizations();
+    Provider.of<OrganisationListViewModel>(context, listen: false).getOrganizationCategories();
+    Provider.of<OrganisationListViewModel>(context, listen: false).getOrganizationCountries();
   }
 
   Widget _buildUI(List<OrganizationViewModel> organizations) {
@@ -31,7 +33,7 @@ class _OrganizationsListPageState extends State<OrganizationsListPage> {
     }
   }
 
-  Widget _buildButton() {
+  Widget _buildButton()  {
     return ElevatedButton.icon(
       onPressed: () {
         Navigator.pushNamed(context, '/organization_creation');

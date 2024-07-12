@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 class OrganisationListViewModel extends ChangeNotifier{
 
   late List<OrganizationViewModel> organizations = [];
+  late List<String> countries = [];
+  late List<String> categories = [];
 
   Future<void> fetchOrganizations() async {
     final organizations = await OrganizationAPI().getOrganizations();
@@ -30,6 +32,22 @@ class OrganisationListViewModel extends ChangeNotifier{
     organizations = organizations.map((organization) => organization.id == id ? OrganizationViewModel(organization: Organization(id: id, name: name, description: description, logoLink: logoLink, link: link, categories: categories, countries: countries)) : organization).toList();
     notifyListeners();
   }
+
+
+  Future<void> getOrganizationCategories() async {
+    final categories = await OrganizationAPI().getOrganizationCategories();
+    this.categories = categories;
+    notifyListeners();
+  }
+
+
+  Future<void> getOrganizationCountries() async {
+    final countries = await OrganizationAPI().getOrganizationCountries();
+    this.countries = countries;
+    notifyListeners();
+  }
+
+
 }
 
 class OrganizationViewModel {

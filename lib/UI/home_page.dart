@@ -11,8 +11,6 @@ class HomePage extends ConsumerStatefulWidget {
 class _HomePageState extends ConsumerState<HomePage> {
   final List<Map<String, dynamic>> buttonData = [
     {'title': 'Articles', 'route': '/article_list'},
-    {'title': 'Questions\n&\nAnswers', 'route': '/question_list'},
-    {'title': 'Charity Funds', 'route': '/fund_list'},
     {'title': 'Organizations', 'route': '/organization_list'},
     {'title': 'News', 'route': '/news_list'},
     {'title': 'User Requests', 'route': '/request_list'},
@@ -51,7 +49,7 @@ class _HomePageState extends ConsumerState<HomePage> {
             ),
             sliver: SliverGrid(
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
+                crossAxisCount: 2,
                 crossAxisSpacing: 30,
                 mainAxisSpacing: 30,
               ),
@@ -80,7 +78,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                     ),
                   );
                 },
-                childCount: 6,
+                childCount: 4,
               ),
             ),
           ),
@@ -89,3 +87,10 @@ class _HomePageState extends ConsumerState<HomePage> {
     );
   }
 }
+
+
+
+// Add this to button data for Q&A and Funds, and increase childCount in SilverChildBuilderDelegate 
+// {'title': 'Questions\n&\nAnswers', 'route': '/question_list'},
+// {'title': 'Charity Funds', 'route': '/fund_list'},
+    

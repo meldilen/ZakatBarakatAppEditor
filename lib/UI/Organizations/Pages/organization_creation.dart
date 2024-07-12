@@ -1,3 +1,4 @@
+import 'package:editor/UI/Organizations/widgets/custom_text_field.dart';
 import 'package:editor/providers/organization_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart' as quill;
@@ -21,16 +22,28 @@ class _CreateOrganizationPageState extends State<CreateOrganizationPage> {
   final _logoLinkController = TextEditingController();
   final quill.QuillController _quillController = quill.QuillController.basic();
 
+  List<String> selectedCategories = [];
+  List<String> selectedCountries = [];
+
+  // @override
+  // void dispose() {
+  //   _nameController.dispose();
+  //   _linkController.dispose();
+  //   _logoLinkController.dispose();
+  //   _categoryControllers.forEach((controller) => controller.dispose());
+  //   _countryControllers.forEach((controller) => controller.dispose());
+  //   _quillController.dispose();
+  //   super.dispose();
+  // }
+
+
   @override
-  void dispose() {
-    _nameController.dispose();
-    _linkController.dispose();
-    _logoLinkController.dispose();
-    _categoryControllers.forEach((controller) => controller.dispose());
-    _countryControllers.forEach((controller) => controller.dispose());
-    _quillController.dispose();
-    super.dispose();
+  void initState() {
+    super.initState();
+    selectedCategories = context.read<OrganisationListViewModel>().categories;
+    selectedCountries = context.read<OrganisationListViewModel>().countries;
   }
+
 
   void _addCountryField() {
     setState(() {
@@ -46,36 +59,43 @@ class _CreateOrganizationPageState extends State<CreateOrganizationPage> {
 
   void _addCategoryField() {
     setState(() {
-      _countryControllers.add(TextEditingController());
+      _categoryControllers.add(TextEditingController());
     });
   }
 
   void _removeCategoryField(int index) {
     setState(() {
-      _countryControllers.removeAt(index).dispose();
+      _categoryControllers.removeAt(index).dispose();
     });
   }
 
   void _createOrganization() async {
-    final name = _nameController.text;
-    final description = _quillController.document.toPlainText();
-    final logo_link = _logoLinkController.text;
-    final link = _linkController.text;
-    final categories = _categoryControllers.map((controller) => controller.text).toList();
-    final countries = _countryControllers.map((controller) => controller.text).toList();
-
-    try{
-      await context.read<OrganisationListViewModel>().createOrganization(name, description, logo_link, link, categories, countries);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Organization created successfully!')),
-      );
-    }catch(e){
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to create organization')),
-      );
-      print(e);
-    }
+  final name = _nameController.text;
+  final description = _quillController.document.toPlainText();
+  final logo_link = _logoLinkController.text;
+  final link = _linkController.text;
+  final categories = _categoryControllers.map((controller) => controller.text).toList();
+  final countries = _countryControllers.map((controller) => controller.text).toList();
+  
+  try {
+    await context.read<OrganisationListViewModel>().createOrganization(
+      name,
+      description,
+      logo_link,
+      link,
+      categories,
+      countries,
+    );
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Organization created successfully!')),
+    );
+  } catch (e) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Failed to create organization')),
+    );
+    print(e);
   }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -112,12 +132,10 @@ class _CreateOrganizationPageState extends State<CreateOrganizationPage> {
                 return Row(
                   children: [
                     Expanded(
-                      child: TextField(
+                      child: DropdownTextField(
+                        items: selectedCategories,
                         controller: controller,
-                        decoration: const InputDecoration(
-                          labelText: 'category',
-                          border: OutlineInputBorder(),
-                        ),
+                        labelText: 'Category',
                       ),
                     ),
                     IconButton(
@@ -127,6 +145,7 @@ class _CreateOrganizationPageState extends State<CreateOrganizationPage> {
                   ],
                 );
               }),
+         
               const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: _addCategoryField,
@@ -138,12 +157,10 @@ class _CreateOrganizationPageState extends State<CreateOrganizationPage> {
                 return Row(
                   children: [
                     Expanded(
-                      child: TextField(
+                      child: DropdownTextField(
+                        items: selectedCountries,
                         controller: controller,
-                        decoration: const InputDecoration(
-                          labelText: 'Country',
-                          border: OutlineInputBorder(),
-                        ),
+                        labelText: 'Country',
                       ),
                     ),
                     IconButton(
@@ -180,3 +197,5 @@ class _CreateOrganizationPageState extends State<CreateOrganizationPage> {
         );
   }
 }
+
+

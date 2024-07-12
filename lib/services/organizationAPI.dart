@@ -3,7 +3,7 @@ import 'package:editor/models/organization_model.dart';
 import 'package:http/http.dart' as http;
 
 class OrganizationAPI{
-  final BaseUrl = 'http://158.160.153.243:8000';
+  final BaseUrl = 'https://weaviatetest.onrender.com';
 
   Future<List<Organization>> getOrganizations() async {
     final response = await http.get(Uri.parse('$BaseUrl/organization/get-organizations'));
@@ -63,6 +63,31 @@ class OrganizationAPI{
       return;
     } else {
       throw Exception('Failed to update organization');
+    }
+  }
+
+
+  Future<List<String>> getOrganizationCategories() async {
+    final response = await http.get(Uri.parse('$BaseUrl/utility/get-categories'));
+    if (response.statusCode == 200) {
+      List<dynamic> body = jsonDecode(response.body);
+      List<String> categories = body.map((dynamic item) => item.toString()).toList();
+
+      return categories;
+    } else {
+      throw Exception('Failed to load categories');
+    }
+  }
+
+
+  Future<List<String>> getOrganizationCountries() async {
+    final response = await http.get(Uri.parse('$BaseUrl/utility/get-countries'));
+    if (response.statusCode == 200) {
+      List<dynamic> body = jsonDecode(response.body);
+      List<String> countries = body.map((dynamic item) => item.toString()).toList();
+      return countries;
+    } else {
+      throw Exception('Failed to load countries');
     }
   }
 

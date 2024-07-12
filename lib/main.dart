@@ -1,18 +1,12 @@
 import 'package:editor/UI/Articles/Pages/article_creation.dart';
 import 'package:editor/UI/Articles/Pages/article_editing.dart';
 import 'package:editor/UI/Articles/Pages/article_list_page.dart';
-import 'package:editor/UI/Funds/Pages/fund_creation.dart';
-import 'package:editor/UI/Funds/Pages/fund_editing.dart';
-import 'package:editor/UI/Funds/Pages/funds_list_page.dart';
 import 'package:editor/UI/News/Pages/news_creation.dart';
 import 'package:editor/UI/News/Pages/news_editing.dart';
 import 'package:editor/UI/News/Pages/news_list_page.dart';
 import 'package:editor/UI/Organizations/Pages/organization_creation.dart';
 import 'package:editor/UI/Organizations/Pages/organization_editing.dart';
 import 'package:editor/UI/Organizations/Pages/organizations_list_page.dart';
-import 'package:editor/UI/QAs/Pages/question_creation.dart';
-import 'package:editor/UI/QAs/Pages/question_editing.dart';
-import 'package:editor/UI/QAs/Pages/question_list_page.dart';
 import 'package:editor/UI/Requests/pages/request_answer_as_article.dart';
 import 'package:editor/UI/Requests/pages/request_answer_as_question.dart';
 import 'package:editor/UI/Requests/pages/request_answer_type_page.dart';
@@ -57,18 +51,7 @@ class MyApp extends StatelessWidget {
         '/article_editing': (context) => EditArticlePage(
               article: ModalRoute.of(context)!.settings.arguments
                   as ArticleViewModel,
-            ),
-        '/question_list': (context) => const QuestionListPage(),
-        '/question_creation': (context) => CreateQuestionPage(),
-        '/question_editing': (context) => EditQuestionPage(
-              question: ModalRoute.of(context)!.settings.arguments
-                  as QuestionViewModel,
-            ),
-        '/fund_list': (context) => const FundListPage(),
-        '/fund_creation': (context) => CreateFundPage(),
-        '/fund_editing': (context) => EditFundPage(
-              fund: ModalRoute.of(context)!.settings.arguments as FundViewModel,
-            ),
+            ), 
         '/news_list': (context) => const NewsListPage(),
         '/news_creation': (context) => CreateNewsArticlePage(),
         '/news_editing': (context) => EditNewsArticlePage(
@@ -98,3 +81,19 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
+
+
+
+// Add this to routes for Q&A and Funds
+// '/question_list': (context) => const QuestionListPage(),
+//         '/question_creation': (context) => CreateQuestionPage(),
+//         '/question_editing': (context) => EditQuestionPage(
+//               question: ModalRoute.of(context)!.settings.arguments
+//                   as QuestionViewModel,
+//             ),
+// '/fund_list': (context) => const FundListPage(),
+//         '/fund_creation': (context) => CreateFundPage(),
+//         '/fund_editing': (context) => EditFundPage(
+//               fund: ModalRoute.of(context)!.settings.arguments as FundViewModel,
+//             ),

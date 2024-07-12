@@ -38,8 +38,7 @@ class _RequestWidgetState extends State<RequestWidget> {
                   children: [
                     IconButton(
                         onPressed: () {
-                          Navigator.pushNamed(context, '/request_answering',
-                              arguments: widget.request);
+                          Navigator.pushNamed(context, '/request_answer_as_article', arguments: widget.request);
                         },
                         icon: Icon(Icons.add_comment_outlined)),
                     IconButton(
