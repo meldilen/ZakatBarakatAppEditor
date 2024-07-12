@@ -44,32 +44,32 @@ class _RequestWidgetState extends State<RequestWidget> {
                         icon: Icon(Icons.add_comment_outlined)),
                     IconButton(
                         onPressed: () {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: Text(
-                                    'Are you sure you want to close this request?'),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () {
-                                      closeRequest(widget.request.id, context);
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: const Text('Delete',
-                                        style: TextStyle(color: Colors.red)),
-                                  ),
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: const Text('Cancel',
-                                        style: TextStyle(color: Colors.grey)),
-                                  ),
-                                ],
-                              );
-                            },
-                          );
+                          // showDialog(
+                          //   context: context,
+                          //   builder: (BuildContext context) {
+                          //     return AlertDialog(
+                          //       title: Text(
+                          //           'Are you sure you want to close this request?'),
+                          //       actions: [
+                          //         TextButton(
+                          //           onPressed: () {
+                          closeRequest(widget.request.id, context);
+                          //     Navigator.of(context).pop();
+                          //   },
+                          //   child: const Text('Delete',
+                          //       style: TextStyle(color: Colors.red)),
+                          // ),
+                          // TextButton(
+                          //   onPressed: () {
+                          //     Navigator.of(context).pop();
+                          //   },
+                          //   child: const Text('Cancel',
+                          //       style: TextStyle(color: Colors.grey)),
+                          // ),
+                          //   ],
+                          // );
+                          //   },
+                          // );
                         },
                         icon: Icon(Icons.close)),
                   ],
