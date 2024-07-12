@@ -11,8 +11,6 @@ class RequestListPage extends StatefulWidget {
 }
 
 class _RequestListPageState extends State<RequestListPage> {
-
-
   @override
   void initState() {
     super.initState();
@@ -20,31 +18,28 @@ class _RequestListPageState extends State<RequestListPage> {
   }
 
   Widget _buildUI(List<RequestViewModel> requests) {
-    if(requests.isEmpty){
-    return const Center(child: Text('No requests found'));
-  }else{
-    return RequestList(requests: requests);
+    if (requests.isEmpty) {
+      return const Center(
+          child: Text('No requests found',
+              style: TextStyle(
+                  fontSize: 30,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold)));
+    } else {
+      return RequestList(requests: requests);
+    }
   }
-  }
-
-
-
 
   AppBar _buildAppBar() {
     return AppBar(
-        backgroundColor: Color.fromARGB(255, 6, 169, 169),
-        title: const Text(
-          'Requests', 
+      backgroundColor: Color.fromARGB(255, 6, 169, 169),
+      title: const Text('Requests',
           style: TextStyle(
-            fontSize: 22, 
-            fontWeight: FontWeight.bold, 
-            color: Colors.white)
-        ),
-        centerTitle: true,
-        elevation: 2,
-      );
+              fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white)),
+      centerTitle: true,
+      elevation: 2,
+    );
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -54,6 +49,4 @@ class _RequestListPageState extends State<RequestListPage> {
       body: _buildUI(requests),
     );
   }
-  
-  
 }

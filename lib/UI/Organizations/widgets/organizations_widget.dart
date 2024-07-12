@@ -12,43 +12,94 @@ class OrganizationWidget extends StatefulWidget {
 }
 
 class _OrganizationWidgetState extends State<OrganizationWidget> {
-
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.max,
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(widget.organization.name),
-            IconButton(onPressed: () {
-              Navigator.pushNamed(context, '/organization_editing', arguments: widget.organization);
-            }, icon: Icon(Icons.edit)),
-            IconButton(onPressed: () {
-              deleteOrganization(widget.organization.id, context);
-            }, icon: Icon(Icons.delete)),
-          ],
-        ),
-        const Divider(
-          height: 1,
-          thickness: 1,
-          color: Color.fromARGB(255, 16, 31, 24),
-        ),
-      ],
+    return Padding(
+      padding: EdgeInsets.symmetric(
+        horizontal: 200,
+        vertical: 10,
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20.0),
+        child: Container(
+            height: 150,
+            color: Color.fromARGB(255, 209, 217, 219),
+            child: Column(
+              children: [
+                Text(
+                  widget.organization.name,
+                  style: const TextStyle(
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  'Categories: ' + widget.organization.categories.join(', '),
+                  style: const TextStyle(
+                    fontSize: 20,
+                  ),
+                ),
+                Text(
+                  'Countries: ' + widget.organization.countries.join(', '),
+                  style: const TextStyle(
+                    fontSize: 20,
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    IconButton(
+                        onPressed: () {
+                          Navigator.pushNamed(context, '/organization_editing',
+                              arguments: widget.organization);
+                        },
+                        icon: Icon(Icons.edit)),
+                    IconButton(
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text(
+                                    'Are you sure you want to delete this organization?'),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      deleteOrganization(
+                                          widget.organization.id, context);
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: const Text('Delete',
+                                        style: TextStyle(color: Colors.red)),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: const Text('Cancel',
+                                        style: TextStyle(color: Colors.grey)),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
+                        icon: Icon(Icons.delete)),
+                  ],
+                )
+              ],
+            )),
+      ),
     );
   }
 
-
   void deleteOrganization(String id, BuildContext context) async {
-    try{
+    try {
       await context.read<OrganisationListViewModel>().removeOrganization(id);
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Organization deleted successfully!')),
       );
-    }catch(e){
+    } catch (e) {
       print(e);
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Failed to delete organization')),
