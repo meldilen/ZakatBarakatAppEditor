@@ -26,7 +26,7 @@ class _HomePageState extends ConsumerState<HomePage> {
         slivers: [
           SliverAppBar(
             backgroundColor: Color.fromARGB(255, 29, 43, 54),
-            expandedHeight: 300,
+            expandedHeight: 200,
             collapsedHeight: 85,
             floating: false,
             pinned: true,
