@@ -32,6 +32,7 @@ class _ArticleListPageState extends State<ArticleListPage> {
 
   Widget _buildButton() {
     return ElevatedButton.icon(
+      iconAlignment: IconAlignment.start,
       onPressed: () {
         Navigator.pushNamed(context, '/article_creation');
       },
@@ -81,8 +82,7 @@ class _ArticleListPageState extends State<ArticleListPage> {
                 background: Container(
                   color: Color.fromARGB(255, 29, 43, 54),
                 ),
-                titlePadding:
-                    const EdgeInsetsDirectional.only(start: 0.0, bottom: 20.0),
+                titlePadding: const EdgeInsetsDirectional.only(bottom: 20.0),
                 title: Text(
                   'ARTICLES',
                   textAlign: TextAlign.start,

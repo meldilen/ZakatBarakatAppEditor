@@ -101,13 +101,35 @@ class _CreateArticlePageState extends State<CreateArticlePage> {
         },
         body: Column(
           children: [
-            TextField(
-              controller: _titleController,
-              decoration: const InputDecoration(
-                labelText: 'Title',
-                border: OutlineInputBorder(),
+            const SizedBox(height: 150),
+            SizedBox(
+              width: 600,
+              child: TextFormField(
+                controller: _titleController,
+                validator: (value) {
+                  if (value!.isEmpty) return 'Please enter some text';
+                  return null;
+                },
+                onChanged: (value) {},
+                decoration: const InputDecoration(
+                  labelText: 'Article title',
+                  labelStyle: TextStyle(fontSize: 20),
+                  prefixIcon: Icon(Icons.article),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 40.0),
+                  filled: true,
+                  fillColor: Colors.white,
+                ),
+                minLines: 1,
+                maxLines: 5,
               ),
             ),
+            // TextField(
+            //   controller: _titleController,
+            //   decoration: const InputDecoration(
+            //     labelText: 'Title',
+            //     border: OutlineInputBorder(),
+            //   ),
+            // ),
             const SizedBox(height: 16),
             ..._tagControllers.map((controller) {
               final index = _tagControllers.indexOf(controller);
