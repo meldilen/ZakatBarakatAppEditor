@@ -8,13 +8,18 @@ import 'package:mockito/mockito.dart';
 
 class MockRequestListViewModel extends Mock implements RequestListViewModel {
   @override
-  Future<void> removeRequest(String id) => super.noSuchMethod(Invocation.method(#removeRequest, [id]), returnValue: Future<void>.value(), returnValueForMissingStub: Future<void>.value());
+  Future<void> removeRequest(String id) =>
+      super.noSuchMethod(Invocation.method(#removeRequest, [id]),
+          returnValue: Future<void>.value(),
+          returnValueForMissingStub: Future<void>.value());
 }
 
 void main() {
   group('RequestWidget', () {
-    testWidgets('renders request text and buttons', (WidgetTester tester) async {
-      final request = RequestViewModel(request: RequestModel(id: '1', requestText: 'Test Request'));
+    testWidgets('renders request text and buttons',
+        (WidgetTester tester) async {
+      final request = RequestViewModel(
+          request: RequestModel(id: '1', requestText: 'Test Request'));
       await tester.pumpWidget(
         ChangeNotifierProvider<RequestListViewModel>(
           create: (_) => RequestListViewModel(),
@@ -25,12 +30,15 @@ void main() {
       );
 
       expect(find.text('Test Request'), findsOneWidget);
-      expect(find.byIcon(Icons.edit), findsOneWidget);
+      expect(find.byIcon(Icons.add_comment_outlined), findsOneWidget);
       expect(find.byIcon(Icons.close), findsOneWidget);
     });
 
-    testWidgets('navigates to request answering screen when edit button is tapped', (WidgetTester tester) async {
-      final request = RequestViewModel(request: RequestModel(id: '1', requestText: 'Test Request'));
+    testWidgets(
+        'navigates to request answering screen when edit button is tapped',
+        (WidgetTester tester) async {
+      final request = RequestViewModel(
+          request: RequestModel(id: '1', requestText: 'Test Request'));
 
       await tester.pumpWidget(
         ChangeNotifierProvider<RequestListViewModel>(
@@ -51,17 +59,21 @@ void main() {
         ),
       );
 
-      await tester.tap(find.byIcon(Icons.edit));
+      await tester.tap(find.byIcon(Icons.add_comment_outlined));
       await tester.pumpAndSettle();
 
       expect(find.text('Request Answering Screen'), findsOneWidget);
     });
 
-    testWidgets('calls closeRequest and shows success message when close button is tapped', (WidgetTester tester) async {
-      final request = RequestViewModel(request: RequestModel(id: '1', requestText: 'Test Request'));
+    testWidgets(
+        'calls closeRequest and shows success message when close button is tapped',
+        (WidgetTester tester) async {
+      final request = RequestViewModel(
+          request: RequestModel(id: '1', requestText: 'Test Request'));
       final mockRequestListViewModel = MockRequestListViewModel();
 
-      when(mockRequestListViewModel.removeRequest('1')).thenAnswer((_) async => Future.value());
+      when(mockRequestListViewModel.removeRequest('1'))
+          .thenAnswer((_) async => Future.value());
 
       await tester.pumpWidget(
         ChangeNotifierProvider<RequestListViewModel>(
@@ -75,18 +87,21 @@ void main() {
       );
 
       await tester.tap(find.byIcon(Icons.close));
-      await tester.pump(); 
+      await tester.pump();
       await tester.pump();
 
       verify(mockRequestListViewModel.removeRequest('1')).called(1);
       expect(find.text('Request closed successfully!'), findsOneWidget);
     });
 
-    testWidgets('shows failure message when close request fails', (WidgetTester tester) async {
-      final request = RequestViewModel(request: RequestModel(id: '1', requestText: 'Test Request'));
+    testWidgets('shows failure message when close request fails',
+        (WidgetTester tester) async {
+      final request = RequestViewModel(
+          request: RequestModel(id: '1', requestText: 'Test Request'));
       final mockRequestListViewModel = MockRequestListViewModel();
 
-      when(mockRequestListViewModel.removeRequest('1')).thenThrow(Exception('Failed to close request'));
+      when(mockRequestListViewModel.removeRequest('1'))
+          .thenThrow(Exception('Failed to close request'));
 
       await tester.pumpWidget(
         ChangeNotifierProvider<RequestListViewModel>(
@@ -100,7 +115,7 @@ void main() {
       );
 
       await tester.tap(find.byIcon(Icons.close));
-      await tester.pump(); 
+      await tester.pump();
       await tester.pump();
 
       verify(mockRequestListViewModel.removeRequest('1')).called(1);
@@ -108,5 +123,3 @@ void main() {
     });
   });
 }
-
-
