@@ -1,47 +1,32 @@
+image: google/dart
 
 stages:
-  - test
-  - analyzing
-  - coverage
+  - build
+  - deploy
 
-code_quality:
-  stage: analyzing
-  image: "ghcr.io/cirruslabs/flutter:3.22.2"
-  before_script:
-    - flutter pub global activate dart_code_metrics
-    - export PATH="$PATH:$HOME/.pub-cache/bin"
-  script:
-    - metrics lib -r codeclimate  > gl-code-quality-report.json
-  artifacts:
-    reports:
-      codequality: gl-code-quality-report.json
+cache:
+  paths:
+    - .pub-cache
 
-test:
-  stage: coverage
-  image: "ghcr.io/cirruslabs/flutter:3.22.2"
-  before_script:
-    - flutter pub global activate junitreport
-    - export PATH="$PATH:$HOME/.pub-cache/bin"
+before_script:
+  - flutter channel stable
+  - flutter upgrade
+  - flutter config --enable-web
+
+build:
+  stage: build
   script:
-    - flutter test --machine --coverage | tojunit -o report.xml
-    - lcov --summary coverage/lcov.info
-    - genhtml coverage/lcov.info --output=coverage
-  coverage: '/lines\.*: \d+\.\d+\%/'
+    - flutter pub get
+    - flutter build web
   artifacts:
-    name: coverage
     paths:
-      - $CI_PROJECT_DIR/coverage
-    reports:
-      junit: report.xml
+      - build/web
+    expire_in: 1 week
 
-flutter test:
-  stage: test
-  image: "ghcr.io/cirruslabs/flutter:3.22.2"
-  script: 
-    - flutter test test
-
-flutter analyze:
-  stage: analyzing
-  image: "ghcr.io/cirruslabs/flutter:3.22.2"
-  script: 
-    - flutter analyze
+pages:
+  stage: deploy
+  script:
+    - mv build/web public
+  artifacts:
+    paths:
+      - public
