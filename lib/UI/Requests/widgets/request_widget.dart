@@ -24,56 +24,60 @@ class _RequestWidgetState extends State<RequestWidget> {
         child: Container(
             height: 100,
             color: Color.fromARGB(255, 209, 217, 219),
-            child: Column(
-              children: [
-                Text(
-                  widget.request.text,
-                  style: const TextStyle(
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold,
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Text(
+                    widget.request.text,
+                    style: const TextStyle(
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    IconButton(
-                        onPressed: () {
-                          Navigator.pushNamed(context, '/request_answer_as_article', arguments: widget.request);
-                        },
-                        icon: Icon(Icons.add_comment_outlined)),
-                    IconButton(
-                        onPressed: () {
-                          // showDialog(
-                          //   context: context,
-                          //   builder: (BuildContext context) {
-                          //     return AlertDialog(
-                          //       title: Text(
-                          //           'Are you sure you want to close this request?'),
-                          //       actions: [
-                          //         TextButton(
-                          //           onPressed: () {
-                          closeRequest(widget.request.id, context);
-                          //     Navigator.of(context).pop();
-                          //   },
-                          //   child: const Text('Delete',
-                          //       style: TextStyle(color: Colors.red)),
-                          // ),
-                          // TextButton(
-                          //   onPressed: () {
-                          //     Navigator.of(context).pop();
-                          //   },
-                          //   child: const Text('Cancel',
-                          //       style: TextStyle(color: Colors.grey)),
-                          // ),
-                          //   ],
-                          // );
-                          //   },
-                          // );
-                        },
-                        icon: Icon(Icons.close)),
-                  ],
-                )
-              ],
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      IconButton(
+                          onPressed: () {
+                            Navigator.pushNamed(
+                                context, '/request_answer_as_article',
+                                arguments: widget.request);
+                          },
+                          icon: Icon(Icons.add_comment_outlined)),
+                      IconButton(
+                          onPressed: () {
+                            // showDialog(
+                            //   context: context,
+                            //   builder: (BuildContext context) {
+                            //     return AlertDialog(
+                            //       title: Text(
+                            //           'Are you sure you want to close this request?'),
+                            //       actions: [
+                            //         TextButton(
+                            //           onPressed: () {
+                            closeRequest(widget.request.id, context);
+                            //     Navigator.of(context).pop();
+                            //   },
+                            //   child: const Text('Delete',
+                            //       style: TextStyle(color: Colors.red)),
+                            // ),
+                            // TextButton(
+                            //   onPressed: () {
+                            //     Navigator.of(context).pop();
+                            //   },
+                            //   child: const Text('Cancel',
+                            //       style: TextStyle(color: Colors.grey)),
+                            // ),
+                            //   ],
+                            // );
+                            //   },
+                            // );
+                          },
+                          icon: Icon(Icons.close)),
+                    ],
+                  )
+                ],
+              ),
             )),
       ),
     );
