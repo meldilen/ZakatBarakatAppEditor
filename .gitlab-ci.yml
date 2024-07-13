@@ -8,11 +8,6 @@ cache:
   paths:
     - .pub-cache
 
-before_script:
-  - flutter channel stable
-  - flutter upgrade
-  - flutter config --enable-web
-
 build:
   stage: build
   script:
