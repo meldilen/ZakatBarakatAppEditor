@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 class DropdownTextField extends StatefulWidget {
   final List<String> items;
   final TextEditingController controller;
-  final String labelText;
+  final String itemName;
 
   const DropdownTextField({
     Key? key,
     required this.items,
     required this.controller,
-    required this.labelText,
+    required this.itemName,
   }) : super(key: key);
 
   @override
@@ -51,7 +51,7 @@ class _DropdownTextFieldState extends State<DropdownTextField> {
       ),
     );
 
-    Overlay.of(context)!.insert(_overlayEntry!);
+    Overlay.of(context).insert(_overlayEntry!);
   }
 
   void _hideOverlay() {
@@ -73,8 +73,17 @@ class _DropdownTextFieldState extends State<DropdownTextField> {
       child: TextField(
         controller: widget.controller,
         decoration: InputDecoration(
-          labelText: widget.labelText,
-          border: OutlineInputBorder(),
+          hintText: "Enter organization " + widget.itemName + " here",
+          hintStyle: TextStyle(fontSize: 20),
+          prefixIcon: widget.itemName == "category"
+              ? Icon(Icons.queue)
+              : Icon(Icons.flag_outlined),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 40.0),
+          filled: true,
+          fillColor: Colors.white,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(20.0)),
+          ),
         ),
         onTap: () {
           if (_overlayEntry == null) {

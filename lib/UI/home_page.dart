@@ -48,10 +48,11 @@ class _HomePageState extends ConsumerState<HomePage> {
               vertical: 50,
             ),
             sliver: SliverGrid(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
+              gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                //crossAxisCount: 2,
                 crossAxisSpacing: 30,
                 mainAxisSpacing: 30,
+                maxCrossAxisExtent: 300,
               ),
               delegate: SliverChildBuilderDelegate(
                 (context, index) {

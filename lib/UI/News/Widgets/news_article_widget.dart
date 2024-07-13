@@ -24,64 +24,66 @@ class _NewsWidgetState extends State<NewsWidget> {
         child: Container(
             height: 150,
             color: Color.fromARGB(255, 209, 217, 219),
-            child: Column(
-              children: [
-                Text(
-                  widget.newsArticle.name,
-                  style: const TextStyle(
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold,
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Text(
+                    widget.newsArticle.name,
+                    style: const TextStyle(
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                Text(
-                  '#' + widget.newsArticle.tags.join(' #'),
-                  style: const TextStyle(
-                    fontSize: 20,
+                  Text(
+                    '#' + widget.newsArticle.tags.join(' #'),
+                    style: const TextStyle(
+                      fontSize: 20,
+                    ),
                   ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    IconButton(
-                        onPressed: () {
-                          Navigator.pushNamed(context, '/news_editing',
-                              arguments: widget.newsArticle);
-                        },
-                        icon: Icon(Icons.edit)),
-                    IconButton(
-                        onPressed: () {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: Text(
-                                    'Are you sure you want to delete this News Article?'),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () {
-                                      deleteNewsArticle(
-                                          widget.newsArticle.id, context);
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: const Text('Delete',
-                                        style: TextStyle(color: Colors.red)),
-                                  ),
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: const Text('Cancel',
-                                        style: TextStyle(color: Colors.grey)),
-                                  ),
-                                ],
-                              );
-                            },
-                          );
-                        },
-                        icon: Icon(Icons.delete)),
-                  ],
-                )
-              ],
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      IconButton(
+                          onPressed: () {
+                            Navigator.pushNamed(context, '/news_editing',
+                                arguments: widget.newsArticle);
+                          },
+                          icon: Icon(Icons.edit)),
+                      IconButton(
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text(
+                                      'Are you sure you want to delete this News Article?'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        deleteNewsArticle(
+                                            widget.newsArticle.id, context);
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: const Text('Delete',
+                                          style: TextStyle(color: Colors.red)),
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: const Text('Cancel',
+                                          style: TextStyle(color: Colors.grey)),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                          icon: Icon(Icons.delete)),
+                    ],
+                  )
+                ],
+              ),
             )),
       ),
     );

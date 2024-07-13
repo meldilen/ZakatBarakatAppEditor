@@ -17,6 +17,8 @@ class _CreateArticlePageState extends State<CreateArticlePage> {
   final _tagControllers = <TextEditingController>[TextEditingController()];
   final quill.QuillController _quillController = quill.QuillController.basic();
 
+  final _formKey = GlobalKey<FormState>();
+
   @override
   void dispose() {
     _titleController.dispose();
@@ -99,67 +101,212 @@ class _CreateArticlePageState extends State<CreateArticlePage> {
             ),
           ];
         },
-        body: Column(
-          children: [
-            TextField(
-              controller: _titleController,
-              decoration: const InputDecoration(
-                labelText: 'Title',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 16),
-            ..._tagControllers.map((controller) {
-              final index = _tagControllers.indexOf(controller);
-              return Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: controller,
-                      decoration: const InputDecoration(
-                        labelText: 'Tag',
-                        border: OutlineInputBorder(),
+        body: SingleChildScrollView(
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                const SizedBox(height: 120),
+                SizedBox(
+                  width: 600,
+                  child: TextFormField(
+                    controller: _titleController,
+                    validator: (value) {
+                      if (value!.isEmpty) return 'Please enter some text';
+                      return null;
+                    },
+                    onChanged: (value) {},
+                    decoration: const InputDecoration(
+                      hintText: "Enter article title here",
+                      hintStyle: TextStyle(fontSize: 20),
+                      prefixIcon: Icon(Icons.article),
+                      contentPadding:
+                          const EdgeInsets.symmetric(horizontal: 40.0),
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                      ),
+                    ),
+                    minLines: 1,
+                    maxLines: 5,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                ..._tagControllers.map((controller) {
+                  final index = _tagControllers.indexOf(controller);
+                  return Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            width: 560,
+                            child: TextFormField(
+                              controller: controller,
+                              validator: (value) {
+                                if (value!.isEmpty)
+                                  return 'Please enter some text';
+                                return null;
+                              },
+                              onChanged: (value) {},
+                              decoration: const InputDecoration(
+                                hintText: "Enter article tag here",
+                                hintStyle: TextStyle(fontSize: 20),
+                                prefixIcon: Icon(Icons.queue),
+                                contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 40.0),
+                                filled: true,
+                                fillColor: Colors.white,
+                                border: OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(20.0)),
+                                ),
+                              ),
+                              minLines: 1,
+                              maxLines: 5,
+                            ),
+                          ),
+                          IconButton(
+                            icon: const Icon(
+                              Icons.remove_circle,
+                              color: Colors.white,
+                            ),
+                            onPressed: () => _removeTagField(index),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 5),
+                    ],
+                  );
+                }),
+                const SizedBox(height: 25),
+                ElevatedButton(
+                  onPressed: _addTagField,
+                  child: const Text(
+                    'Add Tag',
+                    style: TextStyle(fontSize: 20, color: Colors.white),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 40.0, vertical: 15.0),
+                    backgroundColor: Color.fromARGB(255, 29, 43, 54),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 25),
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(8.0),
+                    color: Color.fromARGB(255, 209, 217, 219),
+                  ),
+                  padding: const EdgeInsets.all(8.0),
+                  child: QuillToolbar.simple(
+                    configurations: QuillSimpleToolbarConfigurations(
+                      controller: _quillController,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16.0),
+                Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 42),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(8.0),
+                    color: Color.fromARGB(255, 209, 217, 219),
+                  ),
+                  height: 200,
+                  child: SingleChildScrollView(
+                    child: QuillEditor.basic(
+                      configurations: QuillEditorConfigurations(
+                        controller: _quillController,
                       ),
                     ),
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.remove_circle),
-                    onPressed: () => _removeTagField(index),
-                  ),
-                ],
-              );
-            }),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: _addTagField,
-              child: const Text('Add Tag'),
-            ),
-            const SizedBox(height: 16),
-            const SizedBox(height: 16),
-            QuillToolbar.simple(
-              configurations: QuillSimpleToolbarConfigurations(
-                controller: _quillController,
-              ),
-            ),
-            Expanded(
-              child: QuillEditor.basic(
-                configurations: QuillEditorConfigurations(
-                  controller: _quillController,
                 ),
-              ),
+                const SizedBox(height: 30),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text(
+                                      'Are you sure you want to save this article?'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        _createArticle();
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: const Text('Save',
+                                          style: TextStyle(
+                                              color: Color.fromARGB(
+                                                  255, 39, 72, 45),
+                                              fontSize: 15)),
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: const Text('Cancel',
+                                          style: TextStyle(
+                                              color: Color.fromARGB(
+                                                  255, 135, 7, 7),
+                                              fontSize: 15)),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          }
+                        },
+                        child: const Text(
+                          'Save',
+                          style: TextStyle(fontSize: 20, color: Colors.white),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 56.0, vertical: 15.0),
+                          backgroundColor: Color.fromARGB(255, 29, 43, 54),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20.0),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 40),
+                      ElevatedButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text(
+                          'Cancel',
+                          style: TextStyle(fontSize: 20, color: Colors.white),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 47.0, vertical: 15.0),
+                          backgroundColor: Color.fromARGB(255, 29, 43, 54),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20.0),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () => _createArticle(),
-              child: const Text('Save'),
-            ),
-            ElevatedButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text('Cancel')),
-          ],
+          ),
         ),
       ),
     );
-    //);
   }
 }
