@@ -3,7 +3,7 @@ import 'package:editor/models/request_model.dart';
 import 'package:http/http.dart' as http;
 
 class RequestAPI{
-  final BaseUrl = 'http://158.160.153.243:8000';
+  final BaseUrl = 'https://weaviatetest.onrender.com';
 
   Future<List<RequestModel>> getRequests() async {
     final response = await http.get(Uri.parse('$BaseUrl/knowledge-base/edit/get-requests'));

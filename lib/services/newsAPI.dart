@@ -3,7 +3,7 @@ import 'package:editor/models/news.dart';
 import 'package:http/http.dart' as http;
 
 class NewsAPI {
-  final BaseUrl = 'http://158.160.153.243:8000';
+  final BaseUrl = 'https://weaviatetest.onrender.com';
 
   Future<List<News>> getNews() async {
     final response = await http.get(Uri.parse('$BaseUrl/news/get-news'));

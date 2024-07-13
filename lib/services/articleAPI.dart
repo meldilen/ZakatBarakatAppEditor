@@ -6,7 +6,7 @@ import 'package:editor/models/article.dart';
 
 class ArticleAPI {
 
-  final BaseUrl = 'http://158.160.153.243:8000';
+  final BaseUrl = 'https://weaviatetest.onrender.com';
   Future<List<Article>> getArticles() async {
       final response = await http.get(Uri.parse('$BaseUrl/knowledge-base/get-articles'));
       if (response.statusCode == 200) {

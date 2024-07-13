@@ -3,7 +3,7 @@ import 'package:editor/models/questions_model.dart';
 import 'package:http/http.dart' as http;
 
 class QnaAPI {
-  final BaseUrl = 'http://158.160.153.243:8000';
+  final BaseUrl = 'https://weaviatetest.onrender.com';
 
   Future<List<Question>> getQuestions() async {
     final response = await http.get(Uri.parse('$BaseUrl/qna/get-questions'));

@@ -4,7 +4,7 @@ import 'package:editor/models/fund_model.dart';
 import 'package:http/http.dart' as http;
 
 class FundAPI{
-  final BaseUrl = 'http://158.160.153.243:8000';
+  final BaseUrl = 'https://weaviatetest.onrender.com';
 
   Future<List<Fund>> getFunds() async {
     final response = await http.get(Uri.parse('$BaseUrl/funds/get-funds'));

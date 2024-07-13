@@ -102,10 +102,10 @@ class _OrganizationsListPageState extends State<OrganizationsListPage> {
         },
         body: _buildUI(organizations),
       ),
-      floatingActionButton: Positioned(
-        bottom: 40,
-        child: Container(
-          alignment: Alignment.bottomCenter,
+      floatingActionButton: Align(
+        alignment: Alignment.bottomCenter,
+        child: Padding(
+          padding: const EdgeInsets.only(bottom: 10.0),
           child: _buildButton(),
         ),
       ),
