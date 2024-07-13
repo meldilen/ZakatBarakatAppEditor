@@ -1,4 +1,4 @@
-image: google/dart
+image: ghcr.io/cirruslabs/flutter:3.22.2
 
 stages:
   - build
