@@ -75,7 +75,9 @@ class _DropdownTextFieldState extends State<DropdownTextField> {
         decoration: InputDecoration(
           hintText: "Enter organization " + widget.itemName + " here",
           hintStyle: TextStyle(fontSize: 20),
-          prefixIcon: Icon(Icons.queue),
+          prefixIcon: widget.itemName == "category"
+              ? Icon(Icons.queue)
+              : Icon(Icons.flag_outlined),
           contentPadding: const EdgeInsets.symmetric(horizontal: 40.0),
           filled: true,
           fillColor: Colors.white,
