@@ -26,3 +26,21 @@ pages:
     paths:
       - public
 
+buildFire:
+  stage: build
+  image: gcr.io/google-containers/node:14
+  script:
+    - npm install
+    - npm run build
+  artifacts:
+    paths:
+      - public
+
+deployFire:
+  stage: deploy
+  image: gcr.io/google-containers/node:14
+  script:
+    - npm install -g firebase-tools
+    - firebase deploy --token $FIREBASE_TOKEN
+  only:
+    - master
