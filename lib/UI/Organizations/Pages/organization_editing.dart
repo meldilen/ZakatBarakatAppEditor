@@ -305,7 +305,7 @@ class _EditOrganizationPageState extends State<EditOrganizationPage> {
                               Icons.remove_circle,
                               color: Colors.white,
                             ),
-                            onPressed: () => _removeCategoryField(index),
+                            onPressed: () => _removeCountryField(index),
                           ),
                         ],
                       ),
