@@ -26,20 +26,3 @@ pages:
     paths:
       - public
 
-
-
-buildFire:
-  stage: build
-  script:
-    - flutter build web
-  artifacts:
-    paths:
-      - build/web
-
-
-deployFire:
-  stage: deploy
-  dependencies:
-    - buildFire
-  script:
-    - firebase deploy --token $FIREBASE_TOKEN
