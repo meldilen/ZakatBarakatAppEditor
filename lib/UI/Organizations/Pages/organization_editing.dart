@@ -77,13 +77,13 @@ class _EditOrganizationPageState extends State<EditOrganizationPage> {
 
   void _addCategoryField() {
     setState(() {
-      _countryControllers.add(TextEditingController());
+      _categoryControllers.add(TextEditingController());
     });
   }
 
   void _removeCategoryField(int index) {
     setState(() {
-      _countryControllers.removeAt(index).dispose();
+      _categoryControllers.removeAt(index).dispose();
     });
   }
 
