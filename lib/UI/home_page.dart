@@ -46,7 +46,6 @@ class _HomePageState extends ConsumerState<HomePage> {
             padding: EdgeInsets.symmetric(horizontal: 150, vertical: 150),
             sliver: SliverGrid(
               gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                //crossAxisCount: 2,
                 crossAxisSpacing: 50,
                 mainAxisSpacing: 30,
                 maxCrossAxisExtent: 300,
