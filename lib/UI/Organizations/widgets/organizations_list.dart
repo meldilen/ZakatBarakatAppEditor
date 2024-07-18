@@ -14,15 +14,16 @@ class OrganizationList extends StatefulWidget {
 class _OrganizationListState extends State<OrganizationList> {
   @override
   Widget build(BuildContext context) {
-    return SafeArea (
-      top: true,
-      child: ListView.builder(
-        itemCount: widget.organizations.length,
-        itemBuilder: (context, index) {
-          return OrganizationWidget(organization: widget.organizations[index]);
-        },
-    )
+    return SafeArea(
+      child: Padding(
+          padding: EdgeInsets.only(top: 30, bottom: 80),
+          child: ListView.builder(
+            itemCount: widget.organizations.length,
+            itemBuilder: (context, index) {
+              return OrganizationWidget(
+                  organization: widget.organizations[index]);
+            },
+          )),
     );
   }
-
 }

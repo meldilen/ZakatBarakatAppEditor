@@ -99,7 +99,7 @@ class _ArticleWidgetState extends State<ArticleWidget> {
                           builder: (BuildContext context) {
                             return AlertDialog(
                               title: Text(
-                                  'Are you sure you want to publish this article?'),
+                                  'Are you sure you want to publish this Article?'),
                               actions: [
                                 TextButton(
                                   onPressed: () {
@@ -133,7 +133,7 @@ class _ArticleWidgetState extends State<ArticleWidget> {
                           builder: (BuildContext context) {
                             return AlertDialog(
                               title: Text(
-                                  'Are you sure you want to delete this article?'),
+                                  'Are you sure you want to delete this Article?'),
                               actions: [
                                 TextButton(
                                   onPressed: () {

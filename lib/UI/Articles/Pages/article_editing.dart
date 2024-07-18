@@ -292,7 +292,7 @@ class _EditArticlePageState extends State<EditArticlePage> {
                               builder: (BuildContext context) {
                                 return AlertDialog(
                                   title: Text(
-                                      'Are you sure you want to update this article?'),
+                                      'Are you sure you want to update this Article?'),
                                   actions: [
                                     TextButton(
                                       onPressed: () {

@@ -27,6 +27,8 @@ class _EditOrganizationPageState extends State<EditOrganizationPage> {
 
   final _formKey = GlobalKey<FormState>();
 
+  bool _isPublished = false;
+
   @override
   void initState() {
     super.initState();
@@ -120,7 +122,7 @@ class _EditOrganizationPageState extends State<EditOrganizationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 88, 96, 85),
+      backgroundColor: Color.fromARGB(255, 197, 198, 200),
       body: NestedScrollView(
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return <Widget>[
@@ -163,9 +165,10 @@ class _EditOrganizationPageState extends State<EditOrganizationPage> {
             key: _formKey,
             child: Column(
               children: [
-                const SizedBox(height: 120),
-                SizedBox(
-                  width: 600,
+                const SizedBox(height: 50),
+                Container(
+                  constraints: BoxConstraints(maxWidth: 600),
+                  padding: EdgeInsets.symmetric(horizontal: 15),
                   child: TextFormField(
                     controller: _nameController,
                     validator: (value) {
@@ -190,8 +193,9 @@ class _EditOrganizationPageState extends State<EditOrganizationPage> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                SizedBox(
-                  width: 600,
+                Container(
+                  constraints: BoxConstraints(maxWidth: 600),
+                  padding: EdgeInsets.symmetric(horizontal: 15),
                   child: TextFormField(
                     controller: _logoLinkController,
                     validator: (value) {
@@ -216,8 +220,9 @@ class _EditOrganizationPageState extends State<EditOrganizationPage> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                SizedBox(
-                  width: 600,
+                Container(
+                  constraints: BoxConstraints(maxWidth: 600),
+                  padding: EdgeInsets.symmetric(horizontal: 15),
                   child: TextFormField(
                     controller: _linkController,
                     validator: (value) {
@@ -249,13 +254,16 @@ class _EditOrganizationPageState extends State<EditOrganizationPage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          SizedBox(
-                              width: 560,
-                              child: DropdownTextField(
-                                items: selectedCategories,
-                                controller: controller,
-                                itemName: 'category',
-                              )),
+                          Flexible(
+                            child: Container(
+                                constraints: BoxConstraints(maxWidth: 560),
+                                padding: EdgeInsets.symmetric(horizontal: 15),
+                                child: DropdownTextField(
+                                  items: selectedCategories,
+                                  controller: controller,
+                                  itemName: 'category',
+                                )),
+                          ),
                           IconButton(
                             icon: const Icon(
                               Icons.remove_circle,
@@ -293,13 +301,16 @@ class _EditOrganizationPageState extends State<EditOrganizationPage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          SizedBox(
-                              width: 560,
-                              child: DropdownTextField(
-                                items: selectedCountries,
-                                controller: controller,
-                                itemName: 'country',
-                              )),
+                          Flexible(
+                            child: Container(
+                                constraints: BoxConstraints(maxWidth: 560),
+                                padding: EdgeInsets.symmetric(horizontal: 15),
+                                child: DropdownTextField(
+                                  items: selectedCountries,
+                                  controller: controller,
+                                  itemName: 'country',
+                                )),
+                          ),
                           IconButton(
                             icon: const Icon(
                               Icons.remove_circle,
@@ -331,22 +342,49 @@ class _EditOrganizationPageState extends State<EditOrganizationPage> {
                 ),
                 const SizedBox(height: 25),
                 Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 42),
+                  margin: const EdgeInsets.symmetric(horizontal: 40),
                   decoration: BoxDecoration(
                     border: Border.all(color: Colors.grey),
                     borderRadius: BorderRadius.circular(8.0),
-                    color: Color.fromARGB(255, 209, 217, 219),
+                    color: Colors.white,
                   ),
-                  height: 200,
-                  child: SingleChildScrollView(
-                    child: QuillEditor.basic(
-                      configurations: QuillEditorConfigurations(
-                        controller: _quillController,
-                      ),
+                  child: QuillEditor.basic(
+                    configurations: QuillEditorConfigurations(
+                      controller: _quillController,
+                      autoFocus: true,
+                      minHeight: 400,
                     ),
                   ),
                 ),
                 const SizedBox(height: 30),
+                Container(
+                  constraints: BoxConstraints(maxWidth: 230),
+                  decoration: BoxDecoration(
+                    color: Color.fromARGB(255, 29, 43, 54),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: Color.fromARGB(255, 96, 96, 96)),
+                  ),
+                  child: CheckboxListTile(
+                    title: Text(
+                      'Publish Organization',
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.white,
+                      ),
+                    ),
+                    value: _isPublished,
+                    onChanged: (bool? value) {
+                      setState(() {
+                        _isPublished = value!;
+                      });
+                    },
+                    checkColor: Color.fromARGB(255, 29, 43, 54),
+                    activeColor: Colors.white,
+                    overlayColor: WidgetStateProperty.all(Colors.white),
+                    controlAffinity: ListTileControlAffinity.leading,
+                  ),
+                ),
+                const SizedBox(height: 20),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 20),
                   child: Row(
@@ -360,7 +398,7 @@ class _EditOrganizationPageState extends State<EditOrganizationPage> {
                               builder: (BuildContext context) {
                                 return AlertDialog(
                                   title: Text(
-                                      'Are you sure you want to update this organisation?'),
+                                      'Are you sure you want to update this Organisation?'),
                                   actions: [
                                     TextButton(
                                       onPressed: () {
