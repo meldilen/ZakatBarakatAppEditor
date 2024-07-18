@@ -358,7 +358,7 @@ class _EditOrganizationPageState extends State<EditOrganizationPage> {
                 ),
                 const SizedBox(height: 30),
                 Container(
-                  constraints: BoxConstraints(maxWidth: 230),
+                  constraints: BoxConstraints(maxWidth: 280),
                   decoration: BoxDecoration(
                     color: Color.fromARGB(255, 29, 43, 54),
                     borderRadius: BorderRadius.circular(20),

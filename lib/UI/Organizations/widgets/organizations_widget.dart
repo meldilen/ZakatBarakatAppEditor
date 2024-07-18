@@ -62,7 +62,7 @@ class _OrganizationWidgetState extends State<OrganizationWidget> {
                         widget.organization.name,
                         style: const TextStyle(
                           fontSize: 30,
-                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
                         ),
                       ),
                       const SizedBox(height: 5),
@@ -70,15 +70,13 @@ class _OrganizationWidgetState extends State<OrganizationWidget> {
                         'Categories: ' +
                             widget.organization.categories.join(', '),
                         style: const TextStyle(
-                          fontSize: 20,
-                        ),
+                            fontSize: 15, color: Colors.white70),
                       ),
                       Text(
                         'Countries: ' +
                             widget.organization.countries.join(', '),
                         style: const TextStyle(
-                          fontSize: 20,
-                        ),
+                            fontSize: 15, color: Colors.white70),
                       ),
                     ],
                   ),

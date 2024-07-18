@@ -23,7 +23,7 @@ class _RequestListPageState extends State<RequestListPage> {
           child: Text('No requests found',
               style: TextStyle(
                   fontSize: 30,
-                  color: Colors.white,
+                  color: Colors.black,
                   fontWeight: FontWeight.bold)));
     } else {
       return RequestList(requests: requests);
@@ -35,7 +35,7 @@ class _RequestListPageState extends State<RequestListPage> {
     var requests = context.watch<RequestListViewModel>().requests;
 
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 88, 96, 85),
+      backgroundColor: Color.fromARGB(255, 197, 198, 200),
       body: NestedScrollView(
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return <Widget>[
