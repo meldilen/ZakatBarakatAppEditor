@@ -60,7 +60,7 @@ class _ArticleListPageState extends State<ArticleListPage> {
     var articles = context.watch<ArticleListViewModel>().articles;
 
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 88, 96, 85),
+      backgroundColor: Color.fromARGB(255, 197, 198, 200),
       body: NestedScrollView(
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return <Widget>[
@@ -101,10 +101,10 @@ class _ArticleListPageState extends State<ArticleListPage> {
       ),
       floatingActionButton: Align(
         alignment: Alignment.bottomCenter,
-        child: Padding(
-          padding: const EdgeInsets.only(bottom: 10.0),
-          child: _buildButton(),
-        ),
+        // child: Padding(
+        //   padding: const EdgeInsets.only(bottom: 10.0),
+        child: _buildButton(),
+        //),
       ),
     );
   }

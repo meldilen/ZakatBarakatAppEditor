@@ -15,11 +15,13 @@ class _ArticleListState extends State<ArticleList> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-        child: ListView.builder(
-      itemCount: widget.articles.length,
-      itemBuilder: (context, index) {
-        return ArticleWidget(article: widget.articles[index]);
-      },
-    ));
+        child: Padding(
+            padding: EdgeInsets.only(top: 30, bottom: 80),
+            child: ListView.builder(
+              itemCount: widget.articles.length,
+              itemBuilder: (context, index) {
+                return ArticleWidget(article: widget.articles[index]);
+              },
+            )));
   }
 }

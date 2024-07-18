@@ -14,81 +14,108 @@ class ArticleWidget extends StatefulWidget {
 class _ArticleWidgetState extends State<ArticleWidget> {
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(
-        horizontal: 200,
-        vertical: 10,
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(20.0),
-        child: Container(
-            height: 150,
-            color: Color.fromARGB(255, 209, 217, 219),
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  Text(
-                    widget.article.title,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold,
-                    ),
+    return GestureDetector(
+      onTap: () {
+        Navigator.pushNamed(context, '/article_editing',
+            arguments: widget.article);
+      },
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 50, vertical: 10),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(20),
+          child: Container(
+            decoration: BoxDecoration(
+                color: Color.fromARGB(146, 29, 43, 54),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.5),
+                    spreadRadius: 5,
+                    blurRadius: 30,
+                    offset: Offset(10, 0),
                   ),
-                  Text(
-                    '#' + widget.article.tags.join(' #'),
-                    style: const TextStyle(
-                      fontSize: 20,
-                    ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                ]),
+            alignment: Alignment.center,
+            padding: EdgeInsets.only(top: 20, bottom: 10, left: 20, right: 20),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      IconButton(
-                          onPressed: () {
-                            Navigator.pushNamed(context, '/article_editing',
-                                arguments: widget.article);
-                          },
-                          icon: Icon(Icons.edit)),
-                      IconButton(
-                          onPressed: () {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: Text(
-                                      'Are you sure you want to delete this article?'),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () {
-                                        deleteArticle(
-                                            widget.article.id, context);
-                                        Navigator.of(context).pop();
-                                      },
-                                      child: const Text('Delete',
-                                          style: TextStyle(
-                                              color: Colors.red, fontSize: 15)),
-                                    ),
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                      child: const Text('Cancel',
-                                          style: TextStyle(
-                                              color: Colors.grey,
-                                              fontSize: 15)),
-                                    ),
-                                  ],
-                                );
-                              },
+                      Text(
+                        widget.article.title,
+                        style: const TextStyle(
+                          fontSize: 30,
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(height: 5),
+                      Text(
+                        '#' + widget.article.tags.join(' #'),
+                        style: const TextStyle(
+                            fontSize: 15, color: Colors.white70),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 40),
+                Expanded(
+                  child: Text(
+                      widget.article.text.length > 200
+                          ? '${widget.article.text.substring(0, 200)}...'
+                          : widget.article.text,
+                      style:
+                          const TextStyle(fontSize: 18, color: Colors.white70)),
+                ),
+                const SizedBox(width: 10),
+                Row(
+                  children: [
+                    IconButton(
+                      onPressed: () {},
+                      icon: Icon(Icons.remove_red_eye_rounded,
+                          color: Colors.white),
+                      tooltip: "View",
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text(
+                                  'Are you sure you want to delete this article?'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    deleteArticle(widget.article.id, context);
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: const Text('Delete',
+                                      style: TextStyle(
+                                          color: Colors.red, fontSize: 15)),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: const Text('Cancel',
+                                      style: TextStyle(
+                                          color: Colors.grey, fontSize: 15)),
+                                ),
+                              ],
                             );
                           },
-                          icon: Icon(Icons.delete)),
-                    ],
-                  )
-                ],
-              ),
-            )),
+                        );
+                      },
+                      icon: Icon(Icons.delete, color: Colors.white),
+                      tooltip: "Delete",
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
