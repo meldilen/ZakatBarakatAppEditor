@@ -23,7 +23,7 @@ class _ArticleListPageState extends State<ArticleListPage> {
           child: Text('No articles found',
               style: TextStyle(
                   fontSize: 30,
-                  color: Colors.white,
+                  color: Colors.black,
                   fontWeight: FontWeight.bold)));
     } else {
       return ArticleList(articles: articles);
@@ -46,7 +46,7 @@ class _ArticleListPageState extends State<ArticleListPage> {
         ),
       ),
       style: ElevatedButton.styleFrom(
-        padding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 20.0),
+        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
         backgroundColor: Color.fromARGB(255, 29, 43, 54),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20.0),
@@ -101,10 +101,7 @@ class _ArticleListPageState extends State<ArticleListPage> {
       ),
       floatingActionButton: Align(
         alignment: Alignment.bottomCenter,
-        // child: Padding(
-        //   padding: const EdgeInsets.only(bottom: 10.0),
         child: _buildButton(),
-        //),
       ),
     );
   }

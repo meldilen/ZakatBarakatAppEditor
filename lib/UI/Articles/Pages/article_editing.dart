@@ -20,6 +20,8 @@ class _EditArticlePageState extends State<EditArticlePage> {
 
   final _formKey = GlobalKey<FormState>();
 
+  bool _isPublished = false;
+
   @override
   void initState() {
     super.initState();
@@ -123,7 +125,7 @@ class _EditArticlePageState extends State<EditArticlePage> {
             key: _formKey,
             child: Column(
               children: [
-                const SizedBox(height: 120),
+                const SizedBox(height: 50),
                 Container(
                   constraints: BoxConstraints(maxWidth: 600),
                   padding: EdgeInsets.symmetric(horizontal: 15),
@@ -249,6 +251,34 @@ class _EditArticlePageState extends State<EditArticlePage> {
                   ),
                 ),
                 const SizedBox(height: 30),
+                Container(
+                  constraints: BoxConstraints(maxWidth: 230),
+                  decoration: BoxDecoration(
+                    color: Color.fromARGB(255, 29, 43, 54),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: Color.fromARGB(255, 96, 96, 96)),
+                  ),
+                  child: CheckboxListTile(
+                    title: Text(
+                      'Publish Article',
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.white,
+                      ),
+                    ),
+                    value: _isPublished,
+                    onChanged: (bool? value) {
+                      setState(() {
+                        _isPublished = value!;
+                      });
+                    },
+                    checkColor: Color.fromARGB(255, 29, 43, 54),
+                    activeColor: Colors.white,
+                    overlayColor: WidgetStateProperty.all(Colors.white),
+                    controlAffinity: ListTileControlAffinity.leading,
+                  ),
+                ),
+                const SizedBox(height: 20),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 20),
                   child: Row(
