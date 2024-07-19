@@ -49,13 +49,11 @@ class _NewsWidgetState extends State<NewsWidget> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 16, vertical: 8),
                         decoration: BoxDecoration(
-                          //color: isPublished ? Color.fromARGB(255, 105, 143, 107) : Color.fromARGB(255, 143, 105, 105),
-                          color: Color.fromARGB(255, 143, 105, 105),
+                          color: context.watch<NewsListViewModel>().isSaved(widget.newsArticle.id) ? Color.fromARGB(255, 143, 105, 105) : Color.fromARGB(255, 105, 143, 107),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Text(
-                          "✗ Not published",
-                          //isPublished ? '✓ Published' : '✗ Not published',
+                          context.watch<NewsListViewModel>().isSaved(widget.newsArticle.id) ? '✗ Not published' : '✓ Published',
                           style: const TextStyle(
                               color: Colors.white, fontSize: 16),
                         ),
@@ -92,26 +90,19 @@ class _NewsWidgetState extends State<NewsWidget> {
                 Row(
                   children: [
                     IconButton(
-                      onPressed: () {},
-                      icon: Icon(Icons.remove_red_eye_rounded,
-                          color: Colors.white),
-                      tooltip: "View",
-                    ),
-                    IconButton(
                       onPressed: () {
                         showDialog(
                           context: context,
                           builder: (BuildContext context) {
                             return AlertDialog(
                               title: Text(
-                                  'Are you sure you want to publish this News Article?'),
+                                  'Are you sure you want to ${context.watch<NewsListViewModel>().isSaved(widget.newsArticle.id) ? 'publish' : 'unpublish'} this News Article?'),
                               actions: [
                                 TextButton(
                                   onPressed: () {
-                                    //publishNewsArticle(widget.article.id, context);
-                                    Navigator.of(context).pop();
+                                    publish_unpublishNewsArticle(widget.newsArticle.id, context);
                                   },
-                                  child: const Text('Publish',
+                                  child: Text(context.watch<NewsListViewModel>().isSaved(widget.newsArticle.id) ? 'Publish' : 'Unpublish',
                                       style: TextStyle(
                                           color: Colors.red, fontSize: 15)),
                                 ),
@@ -129,7 +120,7 @@ class _NewsWidgetState extends State<NewsWidget> {
                         );
                       },
                       icon: Icon(Icons.public_outlined, color: Colors.white),
-                      tooltip: "Publish",
+                      tooltip: context.watch<NewsListViewModel>().isSaved(widget.newsArticle.id) ? 'Publish' : 'Unpublish',
                     ),
                     IconButton(
                       onPressed: () {
@@ -177,16 +168,47 @@ class _NewsWidgetState extends State<NewsWidget> {
   }
 
   void deleteNewsArticle(String id, BuildContext context) async {
-    try {
-      await context.read<NewsListViewModel>().removeNewsArticle(id);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('News article deleted successfully!')),
-      );
-    } catch (e) {
-      print(e);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to delete news article')),
-      );
+
+    if(context.read<NewsListViewModel>().isSaved(id)) {
+      try {
+        await context.read<NewsListViewModel>().removeSavedNewsArticle(id);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('News article deleted successfully!')),
+        );
+      } catch (e) {
+        print(e);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to delete news article')),
+        );
+      }
+    } else {
+      try {
+        await context.read<NewsListViewModel>().removePublishedNewsArticle(id);
+        ScaffoldMessenger.of(context).showSnackBar( const SnackBar(content: Text('News article deleted successfully!')));
+      } catch (e) {
+        print(e);
+        ScaffoldMessenger.of(context).showSnackBar( const SnackBar(content: Text('Failed to delete news article')));
+      }
     }
   }
+
+  void publish_unpublishNewsArticle(String id, BuildContext context) async {
+
+    if(context.read<NewsListViewModel>().isSaved(id)) {
+      try {
+        widget.newsArticle.id = await context.read<NewsListViewModel>().publishNewsArticle(id);
+        Navigator.of(context).pop();
+      } catch (e) {
+        print(e);
+      }
+    }else{
+      try {
+        widget.newsArticle.id = await context.read<NewsListViewModel>().unpublishNewsArticle(id);
+        Navigator.of(context).pop();
+      } catch (e) {
+        print(e);
+      }
+    }
+  }
+
 }

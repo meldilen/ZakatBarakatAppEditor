@@ -46,13 +46,11 @@ class _OrganizationWidgetState extends State<OrganizationWidget> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 16, vertical: 8),
                         decoration: BoxDecoration(
-                          //color: isPublished ? Color.fromARGB(255, 105, 143, 107) : Color.fromARGB(255, 143, 105, 105),
-                          color: Color.fromARGB(255, 143, 105, 105),
+                          color: context.watch<OrganisationListViewModel>().isSaved(widget.organization.id) ? Color.fromARGB(255, 143, 105, 105) : Color.fromARGB(255, 105, 143, 107),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Text(
-                          "✗ Not published",
-                          //isPublished ? '✓ Published' : '✗ Not published',
+                          context.watch<OrganisationListViewModel>().isSaved(widget.organization.id) ? '✗ Not published' : '✓ Published',
                           style: const TextStyle(
                               color: Colors.white, fontSize: 16),
                         ),
@@ -94,26 +92,19 @@ class _OrganizationWidgetState extends State<OrganizationWidget> {
                 Row(
                   children: [
                     IconButton(
-                      onPressed: () {},
-                      icon: Icon(Icons.remove_red_eye_rounded,
-                          color: Colors.white),
-                      tooltip: "View",
-                    ),
-                    IconButton(
                       onPressed: () {
                         showDialog(
                           context: context,
                           builder: (BuildContext context) {
                             return AlertDialog(
                               title: Text(
-                                  'Are you sure you want to publish this Organization?'),
+                                  'Are you sure you want to ${context.watch<OrganisationListViewModel>().isSaved(widget.organization.id) ? 'publish' : 'unpublish'} this Organization?'),
                               actions: [
                                 TextButton(
                                   onPressed: () {
-                                    //publishArticle(widget.article.id, context);
-                                    Navigator.of(context).pop();
+                                    publish_unpublishOrganization(widget.organization.id, context);
                                   },
-                                  child: const Text('Publish',
+                                  child: Text(context.watch<OrganisationListViewModel>().isSaved(widget.organization.id) ? 'Publish' : 'Unpublish',
                                       style: TextStyle(
                                           color: Colors.red, fontSize: 15)),
                                 ),
@@ -131,7 +122,7 @@ class _OrganizationWidgetState extends State<OrganizationWidget> {
                         );
                       },
                       icon: Icon(Icons.public_outlined, color: Colors.white),
-                      tooltip: "Publish",
+                      tooltip: context.watch<OrganisationListViewModel>().isSaved(widget.organization.id) ? 'Publish' : 'Unpublish',
                     ),
                     IconButton(
                       onPressed: () {
@@ -179,16 +170,50 @@ class _OrganizationWidgetState extends State<OrganizationWidget> {
   }
 
   void deleteOrganization(String id, BuildContext context) async {
-    try {
-      await context.read<OrganisationListViewModel>().removeOrganization(id);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Organization deleted successfully!')),
-      );
-    } catch (e) {
-      print(e);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to delete organization')),
-      );
+    if(context.read<OrganisationListViewModel>().isSaved(id)) {
+      try {
+        await context.read<OrganisationListViewModel>().removeSavedOrganization(id);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Organization deleted successfully!')),
+        );
+      } catch (e) {
+        print(e);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to delete organization')),
+        );
+      }
+    }else{
+      try {
+        await context.read<OrganisationListViewModel>().removePublishedOrganization(id);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Organization deleted successfully!')),
+        );
+      } catch (e) {
+        print(e);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to delete organization')),
+        );
+      }
     }
   }
+
+  void publish_unpublishOrganization(String id, BuildContext context) async {
+
+    if(context.read<OrganisationListViewModel>().isSaved(id)) {
+      try {
+        widget.organization.id = await context.read<OrganisationListViewModel>().publishOrganization(id);
+        Navigator.of(context).pop();
+      } catch (e) {
+        print(e);
+      }
+    }else{
+      try {
+        widget.organization.id = await context.read<OrganisationListViewModel>().unpublishOrganization(id);
+        Navigator.of(context).pop();
+      } catch (e) {
+        print(e);
+      }
+    }
+  }
+
 }

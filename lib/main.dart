@@ -1,6 +1,7 @@
 import 'package:editor/UI/Articles/Pages/article_creation.dart';
 import 'package:editor/UI/Articles/Pages/article_editing.dart';
 import 'package:editor/UI/Articles/Pages/article_list_page.dart';
+import 'package:editor/UI/Articles/Pages/article_view_page.dart';
 import 'package:editor/UI/News/Pages/news_creation.dart';
 import 'package:editor/UI/News/Pages/news_editing.dart';
 import 'package:editor/UI/News/Pages/news_list_page.dart';
@@ -52,6 +53,10 @@ class MyApp extends StatelessWidget {
               article: ModalRoute.of(context)!.settings.arguments
                   as ArticleViewModel,
             ), 
+        '/article_view': (context) => ArticleViewPage(
+              article: ModalRoute.of(context)!.settings.arguments
+                  as ArticleViewModel,
+            ),
         '/news_list': (context) => const NewsListPage(),
         '/news_creation': (context) => CreateNewsArticlePage(),
         '/news_editing': (context) => EditNewsArticlePage(

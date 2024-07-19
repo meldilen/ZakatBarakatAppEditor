@@ -15,7 +15,9 @@ class _OrganizationsListPageState extends State<OrganizationsListPage> {
   void initState() {
     super.initState();
     Provider.of<OrganisationListViewModel>(context, listen: false)
-        .fetchOrganizations();
+        .fetchPublishedOrganizations();
+    Provider.of<OrganisationListViewModel>(context, listen: false)
+        .fetchSavedOrganizations();
     Provider.of<OrganisationListViewModel>(context, listen: false)
         .getOrganizationCategories();
     Provider.of<OrganisationListViewModel>(context, listen: false)
@@ -61,8 +63,11 @@ class _OrganizationsListPageState extends State<OrganizationsListPage> {
 
   @override
   Widget build(BuildContext context) {
-    var organizations =
-        context.watch<OrganisationListViewModel>().organizations;
+    var publishedOrganizations =
+        context.watch<OrganisationListViewModel>().publishedOrganizations;
+    var savedOrganizations =
+        context.watch<OrganisationListViewModel>().savedOrganizations;
+    var organizations = [...savedOrganizations, ...publishedOrganizations];
     return Scaffold(
       backgroundColor: Color.fromARGB(255, 197, 198, 200),
       body: NestedScrollView(

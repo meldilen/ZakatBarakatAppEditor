@@ -14,7 +14,8 @@ class _ArticleListPageState extends State<ArticleListPage> {
   @override
   void initState() {
     super.initState();
-    Provider.of<ArticleListViewModel>(context, listen: false).fetchArticles();
+    Provider.of<ArticleListViewModel>(context, listen: false).fetchPublshedArticles();
+    Provider.of<ArticleListViewModel>(context, listen: false).fetchSavedArticles();
   }
 
   Widget _buildUI(List<ArticleViewModel> articles) {
@@ -57,8 +58,9 @@ class _ArticleListPageState extends State<ArticleListPage> {
 
   @override
   Widget build(BuildContext context) {
-    var articles = context.watch<ArticleListViewModel>().articles;
-
+    var publishedArticles = context.watch<ArticleListViewModel>().PublishedArticles;
+    var savedArticles = context.watch<ArticleListViewModel>().SavedArticles;
+    var articles = [...savedArticles, ...publishedArticles];
     return Scaffold(
       backgroundColor: Color.fromARGB(255, 197, 198, 200),
       body: NestedScrollView(

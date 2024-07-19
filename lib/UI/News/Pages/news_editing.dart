@@ -17,7 +17,6 @@ class _EditNewsArticlePageState extends State<EditNewsArticlePage> {
   late final TextEditingController _nameController;
   late final List<TextEditingController> _tagControllers;
   late final TextEditingController _sourceLinkController;
-  late final TextEditingController _imageLinkController;
   late final quill.QuillController _quillController;
 
   final _formKey = GlobalKey<FormState>();
@@ -30,8 +29,6 @@ class _EditNewsArticlePageState extends State<EditNewsArticlePage> {
     _nameController = TextEditingController(text: widget.newsArticle.name);
     _sourceLinkController =
         TextEditingController(text: widget.newsArticle.sourceLink);
-    _imageLinkController =
-        TextEditingController(text: widget.newsArticle.imageLink);
     _tagControllers = widget.newsArticle.tags
         .map((tag) => TextEditingController(text: tag))
         .toList();
@@ -42,13 +39,14 @@ class _EditNewsArticlePageState extends State<EditNewsArticlePage> {
       document: doc,
       selection: const TextSelection.collapsed(offset: 0),
     );
+
+    _isPublished = context.read<NewsListViewModel>().isSaved(widget.newsArticle.id) ? false : true;
   }
 
   @override
   void dispose() {
     _nameController.dispose();
     _sourceLinkController.dispose();
-    _imageLinkController.dispose();
     _tagControllers.forEach((controller) => controller.dispose());
     _quillController.dispose();
     super.dispose();
@@ -70,20 +68,54 @@ class _EditNewsArticlePageState extends State<EditNewsArticlePage> {
     final name = _nameController.text;
     final tags = _tagControllers.map((controller) => controller.text).toList();
     final body = _quillController.document.toPlainText();
-    final image_link = _imageLinkController.text;
     final source_link = _sourceLinkController.text;
 
-    try {
-      await context.read<NewsListViewModel>().updateNewsArticle(
-          widget.newsArticle.id, name, body, image_link, source_link, tags);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('News article updated successfully!')),
-      );
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to update news article')),
-      );
-      print(e);
+    if (_isPublished) {
+      try{
+        if(context.read<NewsListViewModel>().isSaved(widget.newsArticle.id)){
+          widget.newsArticle.id = await context.read<NewsListViewModel>().publishNewsArticle(widget.newsArticle.id);
+        }
+        await context
+            .read<NewsListViewModel>()
+            .updatePublishedNewsArticle(widget.newsArticle.id, name, body, source_link, tags);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('News article updated successfully!')),
+        );
+      } catch (e) {
+        String errorMessage = 'Failed to edit news article';
+        if (e is Exception && e.toString().contains('No more than 5 tags allowed.')) {
+          errorMessage = 'Failed to edit news article: no more than 5 tags allowed.';
+        }else if(e is Exception && e.toString().contains('The provided link is invalid.')){
+          errorMessage = 'Failed to edit news article: the provided link is invalid.';
+        }
+        ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(errorMessage)),
+        );
+        print(e);
+      }
+    } else {
+      try{
+        if(context.read<NewsListViewModel>().isSaved(widget.newsArticle.id) == false){
+          widget.newsArticle.id = await context.read<NewsListViewModel>().unpublishNewsArticle(widget.newsArticle.id);
+        }
+        await context
+            .read<NewsListViewModel>()
+            .updateSavedNewsArticle(widget.newsArticle.id, name, body, source_link, tags);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('News article updated successfully!')),
+        );
+      } catch (e) {
+        String errorMessage = 'Failed to edit news article';
+        if (e is Exception && e.toString().contains('No more than 5 tags allowed.')) {
+          errorMessage = 'Failed to edit news article: no more than 5 tags allowed.';
+        }else if(e is Exception && e.toString().contains('The provided link is invalid.')){
+          errorMessage = 'Failed to edit news article: the provided link is invalid.';
+        }
+        ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(errorMessage)),
+        );
+        print(e);
+      }
     }
   }
 
@@ -148,33 +180,6 @@ class _EditNewsArticlePageState extends State<EditNewsArticlePage> {
                       hintText: "Enter News title here",
                       hintStyle: TextStyle(fontSize: 20),
                       prefixIcon: Icon(Icons.newspaper_outlined),
-                      contentPadding:
-                          const EdgeInsets.symmetric(horizontal: 40.0),
-                      filled: true,
-                      fillColor: Colors.white,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                      ),
-                    ),
-                    minLines: 1,
-                    maxLines: 5,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                Container(
-                  constraints: BoxConstraints(maxWidth: 600),
-                  padding: EdgeInsets.symmetric(horizontal: 15),
-                  child: TextFormField(
-                    controller: _imageLinkController,
-                    validator: (value) {
-                      if (value!.isEmpty) return 'Please enter some text';
-                      return null;
-                    },
-                    onChanged: (value) {},
-                    decoration: const InputDecoration(
-                      hintText: "Enter image link here",
-                      hintStyle: TextStyle(fontSize: 20),
-                      prefixIcon: Icon(Icons.link),
                       contentPadding:
                           const EdgeInsets.symmetric(horizontal: 40.0),
                       filled: true,

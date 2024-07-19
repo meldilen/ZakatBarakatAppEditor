@@ -42,21 +42,19 @@ class _RequestWidgetState extends State<RequestWidget> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 8),
-                        decoration: BoxDecoration(
-                          //color: isPublished ? Color.fromARGB(255, 105, 143, 107) : Color.fromARGB(255, 143, 105, 105),
-                          color: Color.fromARGB(255, 143, 105, 105),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Text(
-                          "✗ Not published",
-                          //isPublished ? '✓ Published' : '✗ Not published',
-                          style: const TextStyle(
-                              color: Colors.white, fontSize: 16),
-                        ),
-                      ),
+                      // Container(
+                      //   padding: const EdgeInsets.symmetric(
+                      //       horizontal: 16, vertical: 8),
+                      //   decoration: BoxDecoration(
+                      //     color: widget.request.isAnswered ? Color.fromARGB(255, 105, 143, 107) : Color.fromARGB(255, 143, 105, 105),
+                      //     borderRadius: BorderRadius.circular(10),
+                      //   ),
+                      //   child: Text(
+                      //     widget.request.isAnswered ? '✓ answered' : '✗ Not answered',
+                      //     style: const TextStyle(
+                      //         color: Colors.white, fontSize: 16),
+                      //   ),
+                      // ),
                       const SizedBox(height: 5),
                       Text(
                         widget.request.text,
@@ -71,40 +69,40 @@ class _RequestWidgetState extends State<RequestWidget> {
                 const SizedBox(width: 40),
                 Row(
                   children: [
-                    IconButton(
-                      onPressed: () {
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              title: Text(
-                                  'Are you sure you want to publish the answer to this request?'),
-                              actions: [
-                                TextButton(
-                                  onPressed: () {
-                                    //publishArticle(widget.article.id, context);
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: const Text('Publish',
-                                      style: TextStyle(
-                                          color: Colors.red, fontSize: 15)),
-                                ),
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: const Text('Cancel',
-                                      style: TextStyle(
-                                          color: Colors.grey, fontSize: 15)),
-                                ),
-                              ],
-                            );
-                          },
-                        );
-                      },
-                      icon: Icon(Icons.public_outlined, color: Colors.white),
-                      tooltip: "Publish",
-                    ),
+                    // IconButton(
+                    //   onPressed: () {
+                    //     showDialog(
+                    //       context: context,
+                    //       builder: (BuildContext context) {
+                    //         return AlertDialog(
+                    //           title: Text(
+                    //               'Are you sure you want to publish the answer to this request?'),
+                    //           actions: [
+                    //             TextButton(
+                    //               onPressed: () {
+                    //                 //publishArticle(widget.article.id, context);
+                    //                 Navigator.of(context).pop();
+                    //               },
+                    //               child: const Text('Publish',
+                    //                   style: TextStyle(
+                    //                       color: Colors.red, fontSize: 15)),
+                    //             ),
+                    //             TextButton(
+                    //               onPressed: () {
+                    //                 Navigator.of(context).pop();
+                    //               },
+                    //               child: const Text('Cancel',
+                    //                   style: TextStyle(
+                    //                       color: Colors.grey, fontSize: 15)),
+                    //             ),
+                    //           ],
+                    //         );
+                    //       },
+                    //     );
+                    //   },
+                    //   icon: Icon(Icons.public_outlined, color: Colors.white),
+                    //   tooltip: "Publish",
+                    // ),
                     IconButton(
                         onPressed: () {
                           closeRequest(widget.request.id, context);

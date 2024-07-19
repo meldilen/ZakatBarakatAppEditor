@@ -14,7 +14,8 @@ class _NewsListPageState extends State<NewsListPage> {
   @override
   void initState() {
     super.initState();
-    Provider.of<NewsListViewModel>(context, listen: false).fetchNews();
+    Provider.of<NewsListViewModel>(context, listen: false).fetchPublishedNews();
+    Provider.of<NewsListViewModel>(context, listen: false).fetchSavedNews();
   }
 
   Widget _buildUI(List<NewsViewModel> news) {
@@ -56,8 +57,9 @@ class _NewsListPageState extends State<NewsListPage> {
 
   @override
   Widget build(BuildContext context) {
-    var news = context.watch<NewsListViewModel>().news;
-
+    var publishedNews = context.watch<NewsListViewModel>().publishedNews;
+    var savedNews = context.watch<NewsListViewModel>().savedNews;
+    var news = [...savedNews, ...publishedNews];
     return Scaffold(
       backgroundColor: Color.fromARGB(255, 197, 198, 200),
       body: NestedScrollView(

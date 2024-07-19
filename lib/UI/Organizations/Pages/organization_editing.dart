@@ -19,7 +19,6 @@ class _EditOrganizationPageState extends State<EditOrganizationPage> {
   late final List<TextEditingController> _categoryControllers;
   late final List<TextEditingController> _countryControllers;
   late final TextEditingController _linkController;
-  late final TextEditingController _logoLinkController;
   late final quill.QuillController _quillController;
 
   List<String> selectedCategories = [];
@@ -37,8 +36,6 @@ class _EditOrganizationPageState extends State<EditOrganizationPage> {
 
     _nameController = TextEditingController(text: widget.organization.name);
     _linkController = TextEditingController(text: widget.organization.link);
-    _logoLinkController =
-        TextEditingController(text: widget.organization.logoLink);
     _categoryControllers = widget.organization.categories
         .map((category) => TextEditingController(text: category))
         .toList();
@@ -52,13 +49,15 @@ class _EditOrganizationPageState extends State<EditOrganizationPage> {
       document: doc,
       selection: const TextSelection.collapsed(offset: 0),
     );
+
+    _isPublished = context
+        .read<OrganisationListViewModel>().isSaved(widget.organization.id) ? false : true;
   }
 
   @override
   void dispose() {
     _nameController.dispose();
     _linkController.dispose();
-    _logoLinkController.dispose();
     _categoryControllers.forEach((controller) => controller.dispose());
     _countryControllers.forEach((controller) => controller.dispose());
     _quillController.dispose();
@@ -96,26 +95,64 @@ class _EditOrganizationPageState extends State<EditOrganizationPage> {
     final categories =
         _categoryControllers.map((controller) => controller.text).toList();
     final description = _quillController.document.toPlainText();
-    final logo_link = _logoLinkController.text;
     final link = _linkController.text;
 
-    try {
-      await context.read<OrganisationListViewModel>().updateOrganization(
-          widget.organization.id,
-          name,
-          description,
-          logo_link,
-          link,
-          categories,
-          countries);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Organization updated successfully!')),
-      );
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to update organization')),
-      );
-      print(e);
+    if (_isPublished) {
+      try {
+        if (context.read<OrganisationListViewModel>().isSaved(widget.organization.id)) {
+          widget.organization.id = await context
+              .read<OrganisationListViewModel>()
+              .publishOrganization(widget.organization.id);
+        }
+        await context.read<OrganisationListViewModel>().updatePublishedOrganization(
+            widget.organization.id,
+            name,
+            description,
+            link,
+            categories,
+            countries);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Organization updated successfully!')),
+        );
+      } catch (e) {
+        String errorMessage = 'Failed to edit organization';
+        if (e is Exception && e.toString().contains('The site on the link is not accessible')) {
+          errorMessage = 'Failed to edit organization: the site on the link is not accessible';
+        }else if(e is Exception && e.toString().contains('The provided link is invalid.')){
+          errorMessage = 'Failed to edit organization: the provided link is invalid.';
+        }
+        ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(errorMessage)),
+        );
+        print(e);
+      }
+    } else {
+      try {
+        if (context.read<OrganisationListViewModel>().isSaved(widget.organization.id) == false) {
+          widget.organization.id = await context.read<OrganisationListViewModel>().unpublishOrganization(widget.organization.id);
+        }
+        await context.read<OrganisationListViewModel>().updateSavedOrganization(
+            widget.organization.id,
+            name,
+            description,
+            link,
+            categories,
+            countries);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Organization updated successfully!')),
+        );
+      } catch (e) {
+        String errorMessage = 'Failed to edit organization';
+        if (e is Exception && e.toString().contains('The site on the link is not accessible')) {
+          errorMessage = 'Failed to edit organization: the site on the link is not accessible';
+        }else if(e is Exception && e.toString().contains('The provided link is invalid.')){
+          errorMessage = 'Failed to edit organization: the provided link is invalid.';
+        }
+        ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(errorMessage)),
+        );
+        print(e);
+      }
     }
   }
 
@@ -180,33 +217,6 @@ class _EditOrganizationPageState extends State<EditOrganizationPage> {
                       hintText: "Enter organization name here",
                       hintStyle: TextStyle(fontSize: 20),
                       prefixIcon: Icon(Icons.business_outlined),
-                      contentPadding:
-                          const EdgeInsets.symmetric(horizontal: 40.0),
-                      filled: true,
-                      fillColor: Colors.white,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                      ),
-                    ),
-                    minLines: 1,
-                    maxLines: 5,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                Container(
-                  constraints: BoxConstraints(maxWidth: 600),
-                  padding: EdgeInsets.symmetric(horizontal: 15),
-                  child: TextFormField(
-                    controller: _logoLinkController,
-                    validator: (value) {
-                      if (value!.isEmpty) return 'Please enter some text';
-                      return null;
-                    },
-                    onChanged: (value) {},
-                    decoration: const InputDecoration(
-                      hintText: "Enter logo link here",
-                      hintStyle: TextStyle(fontSize: 20),
-                      prefixIcon: Icon(Icons.dataset_linked_outlined),
                       contentPadding:
                           const EdgeInsets.symmetric(horizontal: 40.0),
                       filled: true,

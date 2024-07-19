@@ -47,18 +47,34 @@ class _CreateArticlePageState extends State<CreateArticlePage> {
     final text = _quillController.document.toPlainText();
     final ops = _quillController.document.toDelta().toJson();
 
-    try {
-      await context
-          .read<ArticleListViewModel>()
-          .createArticle(title, tags, text, ops);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Article created successfully!')),
-      );
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to create article')),
-      );
-      print(e);
+    if(_isPublished){
+      try {
+        await context
+            .read<ArticleListViewModel>()
+            .createPublishedArticle(title, tags, text, ops);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Article created successfully!')),
+        );
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to create article')),
+        );
+        print(e);
+      }
+    }else{
+      try {
+        await context
+            .read<ArticleListViewModel>()
+            .createSavedArticle(title, tags, text, ops);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Article created successfully!')),
+        );
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to create article')),
+        );
+        print(e);
+      }
     }
   }
 
@@ -275,7 +291,7 @@ class _CreateArticlePageState extends State<CreateArticlePage> {
                               builder: (BuildContext context) {
                                 return AlertDialog(
                                   title: Text(
-                                      'Are you sure you want to save this article?'),
+                                      'Are you sure you want to create article?'),
                                   actions: [
                                     TextButton(
                                       onPressed: () {

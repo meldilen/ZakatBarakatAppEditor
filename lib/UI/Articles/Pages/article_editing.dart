@@ -37,6 +37,8 @@ class _EditArticlePageState extends State<EditArticlePage> {
       document: quill.Document.fromJson(ops),
       selection: const TextSelection.collapsed(offset: 0),
     );
+
+    _isPublished = context.read<ArticleListViewModel>().isSaved(widget.article.id) ? false : true;
   }
 
   @override
@@ -64,18 +66,43 @@ class _EditArticlePageState extends State<EditArticlePage> {
     final tags = _tagControllers.map((controller) => controller.text).toList();
     final text = _quillController.document.toPlainText();
     final ops = _quillController.document.toDelta().toJson();
-    try {
-      await context
-          .read<ArticleListViewModel>()
-          .updateArticle(widget.article.id, title, tags, text, ops);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Article updated successfully!')),
-      );
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to update article')),
-      );
-      print(e);
+
+
+    if(_isPublished){
+      try {
+        if(context.read<ArticleListViewModel>().isSaved(widget.article.id)){
+          widget.article.id = await context.read<ArticleListViewModel>().publishArticle(widget.article.id);
+        }
+        await context
+            .read<ArticleListViewModel>()
+            .updatePublishedArticle(widget.article.id, title, tags, text, ops);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Article updated successfully!')),
+        );
+      } catch (e) {
+        
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to update article')),
+        );
+        print(e);
+      }
+    }else{
+      try {
+        if(context.read<ArticleListViewModel>().isSaved(widget.article.id) == false){
+          widget.article.id = await context.read<ArticleListViewModel>().unpublishArticle(widget.article.id);
+        }
+        await context
+            .read<ArticleListViewModel>()
+            .updateSavedArticle(widget.article.id, title, tags, text, ops);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Article updated successfully!')),
+        );
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to update article')),
+        );
+        print(e);
+      }
     }
   }
 

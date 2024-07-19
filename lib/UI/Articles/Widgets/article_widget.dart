@@ -46,13 +46,12 @@ class _ArticleWidgetState extends State<ArticleWidget> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 16, vertical: 8),
                         decoration: BoxDecoration(
-                          //color: isPublished ? Color.fromARGB(255, 105, 143, 107) : Color.fromARGB(255, 143, 105, 105),
-                          color: Color.fromARGB(255, 143, 105, 105),
+                          color: context.watch<ArticleListViewModel>().isSaved(widget.article.id) ? Color.fromARGB(255, 143, 105, 105) : Color.fromARGB(255, 105, 143, 107) ,
+                          
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Text(
-                          "✗ Not published",
-                          //isPublished ? '✓ Published' : '✗ Not published',
+                          context.watch<ArticleListViewModel>().isSaved(widget.article.id) ? '✗ Not published' : '✓ Published',
                           style: const TextStyle(
                               color: Colors.white, fontSize: 16),
                         ),
@@ -87,7 +86,10 @@ class _ArticleWidgetState extends State<ArticleWidget> {
                 Row(
                   children: [
                     IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/article_view',
+                            arguments: widget.article);
+                      },
                       icon: Icon(Icons.remove_red_eye_rounded,
                           color: Colors.white),
                       tooltip: "View",
@@ -99,14 +101,13 @@ class _ArticleWidgetState extends State<ArticleWidget> {
                           builder: (BuildContext context) {
                             return AlertDialog(
                               title: Text(
-                                  'Are you sure you want to publish this Article?'),
+                                  'Are you sure you want to ${context.watch<ArticleListViewModel>().isSaved(widget.article.id) ? 'publish' : 'unpublish'} this Article?'),
                               actions: [
                                 TextButton(
                                   onPressed: () {
-                                    //publishArticle(widget.article.id, context);
-                                    Navigator.of(context).pop();
+                                    publish_unpublishArticle(widget.article.id, context);
                                   },
-                                  child: const Text('Publish',
+                                  child: Text(context.watch<ArticleListViewModel>().isSaved(widget.article.id) ? 'Publish' : 'Unpublish',
                                       style: TextStyle(
                                           color: Colors.red, fontSize: 15)),
                                 ),
@@ -124,7 +125,7 @@ class _ArticleWidgetState extends State<ArticleWidget> {
                         );
                       },
                       icon: Icon(Icons.public_outlined, color: Colors.white),
-                      tooltip: "Publish",
+                      tooltip: context.watch<ArticleListViewModel>().isSaved(widget.article.id) ? 'Publish' : 'Unpublish',
                     ),
                     IconButton(
                       onPressed: () {
@@ -171,16 +172,51 @@ class _ArticleWidgetState extends State<ArticleWidget> {
   }
 
   void deleteArticle(String id, BuildContext context) async {
-    try {
-      await context.read<ArticleListViewModel>().removeArticle(id);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Article deleted successfully!')),
-      );
-    } catch (e) {
-      print(e);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to delete article')),
-      );
+
+    if(context.read<ArticleListViewModel>().isSaved(id)) {
+      try {
+        await context.read<ArticleListViewModel>().removeSavedArticle(id);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Article deleted successfully!')),
+        );
+      } catch (e) {
+        print(e);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to delete article')),
+        );
+      }
+    }else{
+      try {
+        await context.read<ArticleListViewModel>().removePublishedArticle(id);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Article deleted successfully!')),
+        );
+      } catch (e) {
+        print(e);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to delete article')),
+        );
+      }
     }
   }
+
+  void publish_unpublishArticle(String id, BuildContext context) async {
+
+    if(context.read<ArticleListViewModel>().isSaved(id)) {
+      try {
+        widget.article.id = await context.read<ArticleListViewModel>().publishArticle(id);
+        Navigator.of(context).pop();
+      } catch (e) {
+        print(e);
+      }
+    }else{
+      try {
+        widget.article.id = await context.read<ArticleListViewModel>().unpublishArticle(id);
+        Navigator.of(context).pop();
+      } catch (e) {
+        print(e);
+      }
+    }
+  }
+  
 }

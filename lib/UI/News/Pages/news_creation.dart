@@ -16,7 +16,6 @@ class _CreateNewsArticlePageState extends State<CreateNewsArticlePage> {
   final _nameController = TextEditingController();
   final _tagControllers = <TextEditingController>[TextEditingController()];
   final _sourceLinkController = TextEditingController();
-  final _imageLinkController = TextEditingController();
   final quill.QuillController _quillController =
       quill.QuillController.basic(); //body
 
@@ -28,7 +27,6 @@ class _CreateNewsArticlePageState extends State<CreateNewsArticlePage> {
   void dispose() {
     _nameController.dispose();
     _sourceLinkController.dispose();
-    _imageLinkController.dispose();
     _tagControllers.forEach((controller) => controller.dispose());
     _quillController.dispose();
     super.dispose();
@@ -50,21 +48,48 @@ class _CreateNewsArticlePageState extends State<CreateNewsArticlePage> {
     final name = _nameController.text;
     final tags = _tagControllers.map((controller) => controller.text).toList();
     final body = _quillController.document.toPlainText();
-    final image_link = _imageLinkController.text;
     final source_link = _sourceLinkController.text;
 
-    try {
-      await context
-          .read<NewsListViewModel>()
-          .createNewsArticle(name, body, image_link, source_link, tags);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('News article created successfully!')),
-      );
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to create news article')),
-      );
-      print(e);
+    if (_isPublished) {
+      try {
+        await context
+            .read<NewsListViewModel>()
+            .createPublishedNewsArticle(name, body, source_link, tags);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('News article created successfully!')),
+        );
+      } catch (e) {
+        String errorMessage = 'Failed to create news article';
+        if (e is Exception && e.toString().contains('No more than 5 tags allowed.')) {
+          errorMessage = 'Failed to create news article: no more than 5 tags allowed.';
+        }else if(e is Exception && e.toString().contains('The provided link is invalid.')){
+          errorMessage = 'Failed to create news article: the provided link is invalid.';
+        }
+        ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(errorMessage)),
+        );
+        print(e);
+      }
+    } else {
+      try {
+        await context
+            .read<NewsListViewModel>()
+            .createSavedNewsArticle(name, body, source_link, tags);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('News article created successfully!')),
+        );
+      } catch (e) {
+        String errorMessage = 'Failed to create news article';
+        if (e is Exception && e.toString().contains('No more than 5 tags allowed.')) {
+          errorMessage = 'Failed to create news article: no more than 5 tags allowed.';
+        }else if(e is Exception && e.toString().contains('The provided link is invalid.')){
+          errorMessage = 'Failed to create news article: the provided link is invalid.';
+        }
+        ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(errorMessage)),
+        );
+        print(e);
+      }
     }
   }
 
@@ -129,33 +154,6 @@ class _CreateNewsArticlePageState extends State<CreateNewsArticlePage> {
                       hintText: "Enter News title here",
                       hintStyle: TextStyle(fontSize: 20),
                       prefixIcon: Icon(Icons.newspaper_outlined),
-                      contentPadding:
-                          const EdgeInsets.symmetric(horizontal: 40.0),
-                      filled: true,
-                      fillColor: Colors.white,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                      ),
-                    ),
-                    minLines: 1,
-                    maxLines: 5,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                Container(
-                  constraints: BoxConstraints(maxWidth: 600),
-                  padding: EdgeInsets.symmetric(horizontal: 15),
-                  child: TextFormField(
-                    controller: _imageLinkController,
-                    validator: (value) {
-                      if (value!.isEmpty) return 'Please enter some text';
-                      return null;
-                    },
-                    onChanged: (value) {},
-                    decoration: const InputDecoration(
-                      hintText: "Enter image link here",
-                      hintStyle: TextStyle(fontSize: 20),
-                      prefixIcon: Icon(Icons.link),
                       contentPadding:
                           const EdgeInsets.symmetric(horizontal: 40.0),
                       filled: true,

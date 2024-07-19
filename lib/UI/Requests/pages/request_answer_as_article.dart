@@ -55,19 +55,40 @@ class _AnswerAsArticlePageState extends State<AnswerAsArticlePage> {
     final text = _quillController.document.toPlainText();
     final ops = _quillController.document.toDelta().toJson();
 
-    try {
-      await context
-          .read<ArticleListViewModel>()
-          .createArticle(title, tags, text, ops);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Article created successfully!')),
-      );
-      await _showDialog();
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to create article')),
-      );
-      print(e);
+    if(_isPublished){
+      try {
+        await context
+            .read<ArticleListViewModel>()
+            .createPublishedArticle(title, tags, text, ops);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Article created successfully!')),
+        );
+        // widget.request.isAnswered = true;
+        // context.read<RequestListViewModel>().markAsAnswered(widget.request.id);
+        await _showDialog();
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to create article')),
+        );
+        print(e);
+      }
+    }else{
+      try {
+        await context
+            .read<ArticleListViewModel>()
+            .createSavedArticle(title, tags, text, ops);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Article created successfully!')),
+        );
+        // widget.request.isAnswered = true;
+        // context.read<RequestListViewModel>().markAsAnswered(widget.request.id);
+        await _showDialog();
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to create article')),
+        );
+        print(e);
+      }
     }
   }
 

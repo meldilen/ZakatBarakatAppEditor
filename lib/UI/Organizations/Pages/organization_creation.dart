@@ -18,7 +18,6 @@ class _CreateOrganizationPageState extends State<CreateOrganizationPage> {
   final _categoryControllers = <TextEditingController>[TextEditingController()];
   final _countryControllers = <TextEditingController>[TextEditingController()];
   final _linkController = TextEditingController();
-  final _logoLinkController = TextEditingController();
   final quill.QuillController _quillController = quill.QuillController.basic();
 
   List<String> selectedCategories = [];
@@ -32,7 +31,6 @@ class _CreateOrganizationPageState extends State<CreateOrganizationPage> {
   // void dispose() {
   //   _nameController.dispose();
   //   _linkController.dispose();
-  //   _logoLinkController.dispose();
   //   _categoryControllers.forEach((controller) => controller.dispose());
   //   _countryControllers.forEach((controller) => controller.dispose());
   //   _quillController.dispose();
@@ -73,30 +71,60 @@ class _CreateOrganizationPageState extends State<CreateOrganizationPage> {
   void _createOrganization() async {
     final name = _nameController.text;
     final description = _quillController.document.toPlainText();
-    final logo_link = _logoLinkController.text;
     final link = _linkController.text;
     final categories =
         _categoryControllers.map((controller) => controller.text).toList();
     final countries =
         _countryControllers.map((controller) => controller.text).toList();
 
-    try {
-      await context.read<OrganisationListViewModel>().createOrganization(
+    if(_isPublished){
+      try {
+        await context.read<OrganisationListViewModel>().createPublishedOrganization(
             name,
             description,
-            logo_link,
             link,
             categories,
             countries,
           );
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Organization created successfully!')),
-      );
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to create organization')),
-      );
-      print(e);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Organization created successfully!')),
+        );
+      } catch (e) {
+        String errorMessage = 'Failed to create organization';
+        if (e is Exception && e.toString().contains('The site on the link is not accessible')) {
+          errorMessage = 'Failed to create organization: the site on the link is not accessible';
+        }else if(e is Exception && e.toString().contains('The provided link is invalid.')){
+          errorMessage = 'Failed to create organization: the provided link is invalid.';
+        }
+        ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(errorMessage)),
+        );
+        print(e);
+      }
+    }else{
+      try {
+        await context.read<OrganisationListViewModel>().createSavedOrganization(
+            name,
+            description,
+            link,
+            categories,
+            countries,
+          );
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Organization created successfully!')),
+        );
+      } catch (e) {
+        String errorMessage = 'Failed to create organization';
+        if (e is Exception && e.toString().contains('The site on the link is not accessible')) {
+          errorMessage = 'Failed to create organization: the site on the link is not accessible';
+        }else if(e is Exception && e.toString().contains('The provided link is invalid.')){
+          errorMessage = 'Failed to create organization: the provided link is invalid.';
+        }
+        ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(errorMessage)),
+        );
+        print(e);
+      }
     }
   }
 
@@ -161,33 +189,6 @@ class _CreateOrganizationPageState extends State<CreateOrganizationPage> {
                       hintText: "Enter organization name here",
                       hintStyle: TextStyle(fontSize: 20),
                       prefixIcon: Icon(Icons.business_outlined),
-                      contentPadding:
-                          const EdgeInsets.symmetric(horizontal: 40.0),
-                      filled: true,
-                      fillColor: Colors.white,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                      ),
-                    ),
-                    minLines: 1,
-                    maxLines: 5,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                Container(
-                  constraints: BoxConstraints(maxWidth: 600),
-                  padding: EdgeInsets.symmetric(horizontal: 15),
-                  child: TextFormField(
-                    controller: _logoLinkController,
-                    validator: (value) {
-                      if (value!.isEmpty) return 'Please enter some text';
-                      return null;
-                    },
-                    onChanged: (value) {},
-                    decoration: const InputDecoration(
-                      hintText: "Enter logo link here",
-                      hintStyle: TextStyle(fontSize: 20),
-                      prefixIcon: Icon(Icons.dataset_linked_outlined),
                       contentPadding:
                           const EdgeInsets.symmetric(horizontal: 40.0),
                       filled: true,
@@ -379,7 +380,7 @@ class _CreateOrganizationPageState extends State<CreateOrganizationPage> {
                               builder: (BuildContext context) {
                                 return AlertDialog(
                                   title: Text(
-                                      'Are you sure you want to create Organisation?'),
+                                      'Are you sure you want to create organisation?'),
                                   actions: [
                                     TextButton(
                                       onPressed: () {
