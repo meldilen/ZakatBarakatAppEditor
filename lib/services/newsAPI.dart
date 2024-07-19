@@ -121,7 +121,7 @@ class NewsAPI {
 
   Future<void> editSavedNewsArticle(String id, String name, String body, String source_link, List<String> tags) async {
     final response = await http.put(
-      Uri.parse('$BaseUrl/saved-news/edit/edit-saved-news-article/$id'),
+      Uri.parse('$BaseUrl/saved-news/edit-saved-news-article/$id'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
         'name': name,

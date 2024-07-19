@@ -71,11 +71,15 @@ class _EditArticlePageState extends State<EditArticlePage> {
     if(_isPublished){
       try {
         if(context.read<ArticleListViewModel>().isSaved(widget.article.id)){
+          await context
+            .read<ArticleListViewModel>()
+            .updateSavedArticle(widget.article.id, title, tags, text, ops);
           widget.article.id = await context.read<ArticleListViewModel>().publishArticle(widget.article.id);
-        }
-        await context
+        } else {
+          await context
             .read<ArticleListViewModel>()
             .updatePublishedArticle(widget.article.id, title, tags, text, ops);
+        }
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Article updated successfully!')),
         );
@@ -89,11 +93,15 @@ class _EditArticlePageState extends State<EditArticlePage> {
     }else{
       try {
         if(context.read<ArticleListViewModel>().isSaved(widget.article.id) == false){
+          await context
+            .read<ArticleListViewModel>()
+            .updatePublishedArticle(widget.article.id, title, tags, text, ops);
           widget.article.id = await context.read<ArticleListViewModel>().unpublishArticle(widget.article.id);
-        }
-        await context
+        } else {
+          await context
             .read<ArticleListViewModel>()
             .updateSavedArticle(widget.article.id, title, tags, text, ops);
+        }
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Article updated successfully!')),
         );

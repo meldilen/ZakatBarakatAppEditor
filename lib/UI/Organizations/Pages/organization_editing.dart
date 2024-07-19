@@ -100,17 +100,25 @@ class _EditOrganizationPageState extends State<EditOrganizationPage> {
     if (_isPublished) {
       try {
         if (context.read<OrganisationListViewModel>().isSaved(widget.organization.id)) {
-          widget.organization.id = await context
-              .read<OrganisationListViewModel>()
-              .publishOrganization(widget.organization.id);
-        }
-        await context.read<OrganisationListViewModel>().updatePublishedOrganization(
+          await context.read<OrganisationListViewModel>().updateSavedOrganization(
             widget.organization.id,
             name,
             description,
             link,
             categories,
             countries);
+          widget.organization.id = await context
+              .read<OrganisationListViewModel>()
+              .publishOrganization(widget.organization.id);
+        } else {
+          await context.read<OrganisationListViewModel>().updatePublishedOrganization(
+            widget.organization.id,
+            name,
+            description,
+            link,
+            categories,
+            countries);
+        }
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Organization updated successfully!')),
         );
@@ -129,15 +137,23 @@ class _EditOrganizationPageState extends State<EditOrganizationPage> {
     } else {
       try {
         if (context.read<OrganisationListViewModel>().isSaved(widget.organization.id) == false) {
-          widget.organization.id = await context.read<OrganisationListViewModel>().unpublishOrganization(widget.organization.id);
-        }
-        await context.read<OrganisationListViewModel>().updateSavedOrganization(
+          await context.read<OrganisationListViewModel>().updatePublishedOrganization(
             widget.organization.id,
             name,
             description,
             link,
             categories,
             countries);
+          widget.organization.id = await context.read<OrganisationListViewModel>().unpublishOrganization(widget.organization.id);
+        } else {
+          await context.read<OrganisationListViewModel>().updateSavedOrganization(
+            widget.organization.id,
+            name,
+            description,
+            link,
+            categories,
+            countries);
+        }
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Organization updated successfully!')),
         );
