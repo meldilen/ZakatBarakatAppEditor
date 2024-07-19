@@ -15,12 +15,13 @@ class _NewsListState extends State<NewsList> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-        top: true,
-        child: ListView.builder(
-          itemCount: widget.news.length,
-          itemBuilder: (context, index) {
-            return NewsWidget(newsArticle: widget.news[index]);
-          },
-        ));
+        child: Padding(
+            padding: EdgeInsets.only(top: 30, bottom: 80),
+            child: ListView.builder(
+              itemCount: widget.news.length,
+              itemBuilder: (context, index) {
+                return NewsWidget(newsArticle: widget.news[index]);
+              },
+            )));
   }
 }

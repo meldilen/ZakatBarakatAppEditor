@@ -1,6 +1,7 @@
 class RequestModel{
   String id;
   String requestText;
+  // bool isAnswered = false;
 
   RequestModel({required this.id, required this.requestText});
 

@@ -14,7 +14,8 @@ class _ArticleListPageState extends State<ArticleListPage> {
   @override
   void initState() {
     super.initState();
-    Provider.of<ArticleListViewModel>(context, listen: false).fetchArticles();
+    Provider.of<ArticleListViewModel>(context, listen: false).fetchPublshedArticles();
+    Provider.of<ArticleListViewModel>(context, listen: false).fetchSavedArticles();
   }
 
   Widget _buildUI(List<ArticleViewModel> articles) {
@@ -23,7 +24,7 @@ class _ArticleListPageState extends State<ArticleListPage> {
           child: Text('No articles found',
               style: TextStyle(
                   fontSize: 30,
-                  color: Colors.white,
+                  color: Colors.black,
                   fontWeight: FontWeight.bold)));
     } else {
       return ArticleList(articles: articles);
@@ -46,7 +47,7 @@ class _ArticleListPageState extends State<ArticleListPage> {
         ),
       ),
       style: ElevatedButton.styleFrom(
-        padding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 20.0),
+        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
         backgroundColor: Color.fromARGB(255, 29, 43, 54),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20.0),
@@ -57,10 +58,11 @@ class _ArticleListPageState extends State<ArticleListPage> {
 
   @override
   Widget build(BuildContext context) {
-    var articles = context.watch<ArticleListViewModel>().articles;
-
+    var publishedArticles = context.watch<ArticleListViewModel>().PublishedArticles;
+    var savedArticles = context.watch<ArticleListViewModel>().SavedArticles;
+    var articles = [...savedArticles, ...publishedArticles];
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 88, 96, 85),
+      backgroundColor: Color.fromARGB(255, 197, 198, 200),
       body: NestedScrollView(
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return <Widget>[
@@ -101,10 +103,7 @@ class _ArticleListPageState extends State<ArticleListPage> {
       ),
       floatingActionButton: Align(
         alignment: Alignment.bottomCenter,
-        child: Padding(
-          padding: const EdgeInsets.only(bottom: 10.0),
-          child: _buildButton(),
-        ),
+        child: _buildButton(),
       ),
     );
   }

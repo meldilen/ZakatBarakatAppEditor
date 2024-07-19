@@ -14,15 +14,15 @@ class RequestList extends StatefulWidget {
 class _RequestListState extends State<RequestList> {
   @override
   Widget build(BuildContext context) {
-    return SafeArea (
-      top: true,
-      child: ListView.builder(
-        itemCount: widget.requests.length,
-        itemBuilder: (context, index) {
-          return RequestWidget(request: widget.requests[index]);
-        },
-    )
+    return SafeArea(
+      child: Padding(
+          padding: EdgeInsets.only(top: 30, bottom: 80),
+          child: ListView.builder(
+            itemCount: widget.requests.length,
+            itemBuilder: (context, index) {
+              return RequestWidget(request: widget.requests[index]);
+            },
+          )),
     );
   }
-
 }

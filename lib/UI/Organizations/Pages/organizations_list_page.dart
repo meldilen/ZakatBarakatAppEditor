@@ -15,9 +15,13 @@ class _OrganizationsListPageState extends State<OrganizationsListPage> {
   void initState() {
     super.initState();
     Provider.of<OrganisationListViewModel>(context, listen: false)
-        .fetchOrganizations();
-    Provider.of<OrganisationListViewModel>(context, listen: false).getOrganizationCategories();
-    Provider.of<OrganisationListViewModel>(context, listen: false).getOrganizationCountries();
+        .fetchPublishedOrganizations();
+    Provider.of<OrganisationListViewModel>(context, listen: false)
+        .fetchSavedOrganizations();
+    Provider.of<OrganisationListViewModel>(context, listen: false)
+        .getOrganizationCategories();
+    Provider.of<OrganisationListViewModel>(context, listen: false)
+        .getOrganizationCountries();
   }
 
   Widget _buildUI(List<OrganizationViewModel> organizations) {
@@ -26,14 +30,14 @@ class _OrganizationsListPageState extends State<OrganizationsListPage> {
           child: Text('No organizations found',
               style: TextStyle(
                   fontSize: 30,
-                  color: Colors.white,
+                  color: Colors.black,
                   fontWeight: FontWeight.bold)));
     } else {
       return OrganizationList(organizations: organizations);
     }
   }
 
-  Widget _buildButton()  {
+  Widget _buildButton() {
     return ElevatedButton.icon(
       onPressed: () {
         Navigator.pushNamed(context, '/organization_creation');
@@ -48,7 +52,7 @@ class _OrganizationsListPageState extends State<OrganizationsListPage> {
         ),
       ),
       style: ElevatedButton.styleFrom(
-        padding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 20.0),
+        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
         backgroundColor: Color.fromARGB(255, 29, 43, 54),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20.0),
@@ -59,10 +63,13 @@ class _OrganizationsListPageState extends State<OrganizationsListPage> {
 
   @override
   Widget build(BuildContext context) {
-    var organizations =
-        context.watch<OrganisationListViewModel>().organizations;
+    var publishedOrganizations =
+        context.watch<OrganisationListViewModel>().publishedOrganizations;
+    var savedOrganizations =
+        context.watch<OrganisationListViewModel>().savedOrganizations;
+    var organizations = [...savedOrganizations, ...publishedOrganizations];
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 88, 96, 85),
+      backgroundColor: Color.fromARGB(255, 197, 198, 200),
       body: NestedScrollView(
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return <Widget>[
@@ -104,10 +111,7 @@ class _OrganizationsListPageState extends State<OrganizationsListPage> {
       ),
       floatingActionButton: Align(
         alignment: Alignment.bottomCenter,
-        child: Padding(
-          padding: const EdgeInsets.only(bottom: 10.0),
-          child: _buildButton(),
-        ),
+        child: _buildButton(),
       ),
     );
   }

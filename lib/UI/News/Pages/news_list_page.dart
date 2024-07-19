@@ -14,7 +14,8 @@ class _NewsListPageState extends State<NewsListPage> {
   @override
   void initState() {
     super.initState();
-    Provider.of<NewsListViewModel>(context, listen: false).fetchNews();
+    Provider.of<NewsListViewModel>(context, listen: false).fetchPublishedNews();
+    Provider.of<NewsListViewModel>(context, listen: false).fetchSavedNews();
   }
 
   Widget _buildUI(List<NewsViewModel> news) {
@@ -23,7 +24,7 @@ class _NewsListPageState extends State<NewsListPage> {
           child: Text('No news found',
               style: TextStyle(
                   fontSize: 30,
-                  color: Colors.white,
+                  color: Colors.black,
                   fontWeight: FontWeight.bold)));
     } else {
       return NewsList(news: news);
@@ -45,7 +46,7 @@ class _NewsListPageState extends State<NewsListPage> {
         ),
       ),
       style: ElevatedButton.styleFrom(
-        padding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 20.0),
+        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
         backgroundColor: Color.fromARGB(255, 29, 43, 54),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20.0),
@@ -56,9 +57,11 @@ class _NewsListPageState extends State<NewsListPage> {
 
   @override
   Widget build(BuildContext context) {
-    var news = context.watch<NewsListViewModel>().news;
+    var publishedNews = context.watch<NewsListViewModel>().publishedNews;
+    var savedNews = context.watch<NewsListViewModel>().savedNews;
+    var news = [...savedNews, ...publishedNews];
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 88, 96, 85),
+      backgroundColor: Color.fromARGB(255, 197, 198, 200),
       body: NestedScrollView(
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return <Widget>[
@@ -100,10 +103,7 @@ class _NewsListPageState extends State<NewsListPage> {
       ),
       floatingActionButton: Align(
         alignment: Alignment.bottomCenter,
-        child: Padding(
-          padding: const EdgeInsets.only(bottom: 10.0),
-          child: _buildButton(),
-        ),
+        child: _buildButton(),
       ),
     );
   }

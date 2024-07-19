@@ -19,7 +19,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 88, 96, 85),
+      backgroundColor: Color.fromARGB(255, 197, 198, 200),
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
@@ -43,14 +43,10 @@ class _HomePageState extends ConsumerState<HomePage> {
             ),
           ),
           SliverPadding(
-            padding: EdgeInsets.symmetric(
-              horizontal: 250,
-              vertical: 50,
-            ),
+            padding: EdgeInsets.symmetric(horizontal: 150, vertical: 150),
             sliver: SliverGrid(
               gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                //crossAxisCount: 2,
-                crossAxisSpacing: 30,
+                crossAxisSpacing: 50,
                 mainAxisSpacing: 30,
                 maxCrossAxisExtent: 300,
               ),
@@ -64,14 +60,24 @@ class _HomePageState extends ConsumerState<HomePage> {
                       borderRadius: BorderRadius.circular(20),
                       child: Container(
                         height: 100,
-                        color: const Color.fromARGB(255, 209, 217, 219),
+                        decoration: BoxDecoration(
+                            color: Color.fromARGB(146, 29, 43, 54),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.5),
+                                spreadRadius: 5,
+                                blurRadius: 30,
+                                offset: Offset(10, 0),
+                              ),
+                            ]),
                         alignment: Alignment.center,
                         padding: EdgeInsets.all(15),
                         child: Text(
                           buttonData[index]['title'],
                           textAlign: TextAlign.center,
                           style: const TextStyle(
-                            fontSize: 30,
+                            fontSize: 35,
+                            color: Colors.white,
                             fontWeight: FontWeight.bold,
                           ),
                         ),

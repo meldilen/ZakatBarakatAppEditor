@@ -17,10 +17,11 @@ class _EditNewsArticlePageState extends State<EditNewsArticlePage> {
   late final TextEditingController _nameController;
   late final List<TextEditingController> _tagControllers;
   late final TextEditingController _sourceLinkController;
-  late final TextEditingController _imageLinkController;
   late final quill.QuillController _quillController;
 
   final _formKey = GlobalKey<FormState>();
+
+  bool _isPublished = false;
 
   @override
   void initState() {
@@ -28,8 +29,6 @@ class _EditNewsArticlePageState extends State<EditNewsArticlePage> {
     _nameController = TextEditingController(text: widget.newsArticle.name);
     _sourceLinkController =
         TextEditingController(text: widget.newsArticle.sourceLink);
-    _imageLinkController =
-        TextEditingController(text: widget.newsArticle.imageLink);
     _tagControllers = widget.newsArticle.tags
         .map((tag) => TextEditingController(text: tag))
         .toList();
@@ -40,13 +39,14 @@ class _EditNewsArticlePageState extends State<EditNewsArticlePage> {
       document: doc,
       selection: const TextSelection.collapsed(offset: 0),
     );
+
+    _isPublished = context.read<NewsListViewModel>().isSaved(widget.newsArticle.id) ? false : true;
   }
 
   @override
   void dispose() {
     _nameController.dispose();
     _sourceLinkController.dispose();
-    _imageLinkController.dispose();
     _tagControllers.forEach((controller) => controller.dispose());
     _quillController.dispose();
     super.dispose();
@@ -68,27 +68,61 @@ class _EditNewsArticlePageState extends State<EditNewsArticlePage> {
     final name = _nameController.text;
     final tags = _tagControllers.map((controller) => controller.text).toList();
     final body = _quillController.document.toPlainText();
-    final image_link = _imageLinkController.text;
     final source_link = _sourceLinkController.text;
 
-    try {
-      await context.read<NewsListViewModel>().updateNewsArticle(
-          widget.newsArticle.id, name, body, image_link, source_link, tags);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('News article updated successfully!')),
-      );
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to update news article')),
-      );
-      print(e);
+    if (_isPublished) {
+      try{
+        if(context.read<NewsListViewModel>().isSaved(widget.newsArticle.id)){
+          widget.newsArticle.id = await context.read<NewsListViewModel>().publishNewsArticle(widget.newsArticle.id);
+        }
+        await context
+            .read<NewsListViewModel>()
+            .updatePublishedNewsArticle(widget.newsArticle.id, name, body, source_link, tags);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('News article updated successfully!')),
+        );
+      } catch (e) {
+        String errorMessage = 'Failed to edit news article';
+        if (e is Exception && e.toString().contains('No more than 5 tags allowed.')) {
+          errorMessage = 'Failed to edit news article: no more than 5 tags allowed.';
+        }else if(e is Exception && e.toString().contains('The provided link is invalid.')){
+          errorMessage = 'Failed to edit news article: the provided link is invalid.';
+        }
+        ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(errorMessage)),
+        );
+        print(e);
+      }
+    } else {
+      try{
+        if(context.read<NewsListViewModel>().isSaved(widget.newsArticle.id) == false){
+          widget.newsArticle.id = await context.read<NewsListViewModel>().unpublishNewsArticle(widget.newsArticle.id);
+        }
+        await context
+            .read<NewsListViewModel>()
+            .updateSavedNewsArticle(widget.newsArticle.id, name, body, source_link, tags);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('News article updated successfully!')),
+        );
+      } catch (e) {
+        String errorMessage = 'Failed to edit news article';
+        if (e is Exception && e.toString().contains('No more than 5 tags allowed.')) {
+          errorMessage = 'Failed to edit news article: no more than 5 tags allowed.';
+        }else if(e is Exception && e.toString().contains('The provided link is invalid.')){
+          errorMessage = 'Failed to edit news article: the provided link is invalid.';
+        }
+        ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(errorMessage)),
+        );
+        print(e);
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 88, 96, 85),
+      backgroundColor: Color.fromARGB(255, 197, 198, 200),
       body: NestedScrollView(
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return <Widget>[
@@ -131,9 +165,10 @@ class _EditNewsArticlePageState extends State<EditNewsArticlePage> {
             key: _formKey,
             child: Column(
               children: [
-                const SizedBox(height: 120),
-                SizedBox(
-                  width: 600,
+                const SizedBox(height: 50),
+                Container(
+                  constraints: BoxConstraints(maxWidth: 600),
+                  padding: EdgeInsets.symmetric(horizontal: 15),
                   child: TextFormField(
                     controller: _nameController,
                     validator: (value) {
@@ -158,34 +193,9 @@ class _EditNewsArticlePageState extends State<EditNewsArticlePage> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                SizedBox(
-                  width: 600,
-                  child: TextFormField(
-                    controller: _imageLinkController,
-                    validator: (value) {
-                      if (value!.isEmpty) return 'Please enter some text';
-                      return null;
-                    },
-                    onChanged: (value) {},
-                    decoration: const InputDecoration(
-                      hintText: "Enter image link here",
-                      hintStyle: TextStyle(fontSize: 20),
-                      prefixIcon: Icon(Icons.link),
-                      contentPadding:
-                          const EdgeInsets.symmetric(horizontal: 40.0),
-                      filled: true,
-                      fillColor: Colors.white,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                      ),
-                    ),
-                    minLines: 1,
-                    maxLines: 5,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                SizedBox(
-                  width: 600,
+                Container(
+                  constraints: BoxConstraints(maxWidth: 600),
+                  padding: EdgeInsets.symmetric(horizontal: 15),
                   child: TextFormField(
                     controller: _sourceLinkController,
                     validator: (value) {
@@ -217,31 +227,34 @@ class _EditNewsArticlePageState extends State<EditNewsArticlePage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          SizedBox(
-                            width: 560,
-                            child: TextFormField(
-                              controller: controller,
-                              validator: (value) {
-                                if (value!.isEmpty)
-                                  return 'Please enter some text';
-                                return null;
-                              },
-                              onChanged: (value) {},
-                              decoration: const InputDecoration(
-                                hintText: "Enter News tag here",
-                                hintStyle: TextStyle(fontSize: 20),
-                                prefixIcon: Icon(Icons.queue),
-                                contentPadding: const EdgeInsets.symmetric(
-                                    horizontal: 40.0),
-                                filled: true,
-                                fillColor: Colors.white,
-                                border: OutlineInputBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(20.0)),
+                          Flexible(
+                            child: Container(
+                              constraints: BoxConstraints(maxWidth: 560),
+                              padding: EdgeInsets.symmetric(horizontal: 15),
+                              child: TextFormField(
+                                controller: controller,
+                                validator: (value) {
+                                  if (value!.isEmpty)
+                                    return 'Please enter some text';
+                                  return null;
+                                },
+                                onChanged: (value) {},
+                                decoration: const InputDecoration(
+                                  hintText: "Enter News tag here",
+                                  hintStyle: TextStyle(fontSize: 20),
+                                  prefixIcon: Icon(Icons.queue),
+                                  contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: 40.0),
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                  border: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(20.0)),
+                                  ),
                                 ),
+                                minLines: 1,
+                                maxLines: 5,
                               ),
-                              minLines: 1,
-                              maxLines: 5,
                             ),
                           ),
                           IconButton(
@@ -275,22 +288,49 @@ class _EditNewsArticlePageState extends State<EditNewsArticlePage> {
                 ),
                 const SizedBox(height: 25),
                 Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 42),
+                  margin: const EdgeInsets.symmetric(horizontal: 40),
                   decoration: BoxDecoration(
                     border: Border.all(color: Colors.grey),
                     borderRadius: BorderRadius.circular(8.0),
-                    color: Color.fromARGB(255, 209, 217, 219),
+                    color: Colors.white,
                   ),
-                  height: 200,
-                  child: SingleChildScrollView(
-                    child: QuillEditor.basic(
-                      configurations: QuillEditorConfigurations(
-                        controller: _quillController,
-                      ),
+                  child: QuillEditor.basic(
+                    configurations: QuillEditorConfigurations(
+                      controller: _quillController,
+                      autoFocus: true,
+                      minHeight: 400,
                     ),
                   ),
                 ),
                 const SizedBox(height: 30),
+                Container(
+                  constraints: BoxConstraints(maxWidth: 230),
+                  decoration: BoxDecoration(
+                    color: Color.fromARGB(255, 29, 43, 54),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: Color.fromARGB(255, 96, 96, 96)),
+                  ),
+                  child: CheckboxListTile(
+                    title: Text(
+                      'Publish News Article',
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.white,
+                      ),
+                    ),
+                    value: _isPublished,
+                    onChanged: (bool? value) {
+                      setState(() {
+                        _isPublished = value!;
+                      });
+                    },
+                    checkColor: Color.fromARGB(255, 29, 43, 54),
+                    activeColor: Colors.white,
+                    overlayColor: WidgetStateProperty.all(Colors.white),
+                    controlAffinity: ListTileControlAffinity.leading,
+                  ),
+                ),
+                const SizedBox(height: 20),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 20),
                   child: Row(

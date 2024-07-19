@@ -18,6 +18,11 @@ class RequestListViewModel extends ChangeNotifier{
     requests.removeWhere((request) => request.id == id);
     notifyListeners();
   }
+
+  // void markAsAnswered(String id) {
+  //   requests = requests.map((request) => request.id == id ? RequestViewModel(request: RequestModel(id: id, requestText: request.text, isAnswered: true)) : request).toList();
+  //   notifyListeners();
+  // }
 }
 
 class RequestViewModel {
@@ -27,5 +32,7 @@ class RequestViewModel {
 
   String get id => request.id;
   String get text => request.requestText;
+  // bool get isAnswered => request.isAnswered;
+  // set isAnswered(bool value) => request.isAnswered = value;
   
 }

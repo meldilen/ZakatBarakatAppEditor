@@ -21,6 +21,8 @@ class _AnswerAsArticlePageState extends State<AnswerAsArticlePage> {
 
   final _formKey = GlobalKey<FormState>();
 
+  bool _isPublished = false;
+
   @override
   void initState() {
     super.initState();
@@ -53,26 +55,47 @@ class _AnswerAsArticlePageState extends State<AnswerAsArticlePage> {
     final text = _quillController.document.toPlainText();
     final ops = _quillController.document.toDelta().toJson();
 
-    try {
-      await context
-          .read<ArticleListViewModel>()
-          .createArticle(title, tags, text, ops);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Article created successfully!')),
-      );
-      await _showDialog();
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to create article')),
-      );
-      print(e);
+    if(_isPublished){
+      try {
+        await context
+            .read<ArticleListViewModel>()
+            .createPublishedArticle(title, tags, text, ops);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Article created successfully!')),
+        );
+        // widget.request.isAnswered = true;
+        // context.read<RequestListViewModel>().markAsAnswered(widget.request.id);
+        await _showDialog();
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to create article')),
+        );
+        print(e);
+      }
+    }else{
+      try {
+        await context
+            .read<ArticleListViewModel>()
+            .createSavedArticle(title, tags, text, ops);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Article created successfully!')),
+        );
+        // widget.request.isAnswered = true;
+        // context.read<RequestListViewModel>().markAsAnswered(widget.request.id);
+        await _showDialog();
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to create article')),
+        );
+        print(e);
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 88, 96, 85),
+      backgroundColor: Color.fromARGB(255, 197, 198, 200),
       body: NestedScrollView(
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return <Widget>[
@@ -115,9 +138,10 @@ class _AnswerAsArticlePageState extends State<AnswerAsArticlePage> {
             key: _formKey,
             child: Column(
               children: [
-                const SizedBox(height: 120),
-                SizedBox(
-                  width: 600,
+                const SizedBox(height: 50),
+                Container(
+                  constraints: BoxConstraints(maxWidth: 600),
+                  padding: EdgeInsets.symmetric(horizontal: 15),
                   child: TextFormField(
                     controller: _titleController,
                     validator: (value) {
@@ -149,31 +173,34 @@ class _AnswerAsArticlePageState extends State<AnswerAsArticlePage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          SizedBox(
-                            width: 560,
-                            child: TextFormField(
-                              controller: controller,
-                              validator: (value) {
-                                if (value!.isEmpty)
-                                  return 'Please enter some text';
-                                return null;
-                              },
-                              onChanged: (value) {},
-                              decoration: const InputDecoration(
-                                hintText: "Enter article tag here",
-                                hintStyle: TextStyle(fontSize: 20),
-                                prefixIcon: Icon(Icons.queue),
-                                contentPadding: const EdgeInsets.symmetric(
-                                    horizontal: 40.0),
-                                filled: true,
-                                fillColor: Colors.white,
-                                border: OutlineInputBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(20.0)),
+                          Flexible(
+                            child: Container(
+                              constraints: BoxConstraints(maxWidth: 560),
+                              padding: EdgeInsets.symmetric(horizontal: 15),
+                              child: TextFormField(
+                                controller: controller,
+                                validator: (value) {
+                                  if (value!.isEmpty)
+                                    return 'Please enter some text';
+                                  return null;
+                                },
+                                onChanged: (value) {},
+                                decoration: const InputDecoration(
+                                  hintText: "Enter article tag here",
+                                  hintStyle: TextStyle(fontSize: 20),
+                                  prefixIcon: Icon(Icons.queue),
+                                  contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: 40.0),
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                  border: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(20.0)),
+                                  ),
                                 ),
+                                minLines: 1,
+                                maxLines: 5,
                               ),
-                              minLines: 1,
-                              maxLines: 5,
                             ),
                           ),
                           IconButton(
@@ -210,9 +237,10 @@ class _AnswerAsArticlePageState extends State<AnswerAsArticlePage> {
                   decoration: BoxDecoration(
                     border: Border.all(color: Colors.grey),
                     borderRadius: BorderRadius.circular(8.0),
-                    color: Color.fromARGB(255, 209, 217, 219),
+                    color: Colors.white,
                   ),
                   padding: const EdgeInsets.all(8.0),
+                  margin: const EdgeInsets.symmetric(horizontal: 37),
                   child: QuillToolbar.simple(
                     configurations: QuillSimpleToolbarConfigurations(
                       controller: _quillController,
@@ -221,22 +249,49 @@ class _AnswerAsArticlePageState extends State<AnswerAsArticlePage> {
                 ),
                 const SizedBox(height: 16.0),
                 Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 42),
+                  margin: const EdgeInsets.symmetric(horizontal: 40),
                   decoration: BoxDecoration(
                     border: Border.all(color: Colors.grey),
                     borderRadius: BorderRadius.circular(8.0),
-                    color: Color.fromARGB(255, 209, 217, 219),
+                    color: Colors.white,
                   ),
-                  height: 200,
-                  child: SingleChildScrollView(
-                    child: QuillEditor.basic(
-                      configurations: QuillEditorConfigurations(
-                        controller: _quillController,
-                      ),
+                  child: QuillEditor.basic(
+                    configurations: QuillEditorConfigurations(
+                      controller: _quillController,
+                      autoFocus: true,
+                      minHeight: 400,
                     ),
                   ),
                 ),
                 const SizedBox(height: 30),
+                Container(
+                  constraints: BoxConstraints(maxWidth: 230),
+                  decoration: BoxDecoration(
+                    color: Color.fromARGB(255, 29, 43, 54),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: Color.fromARGB(255, 96, 96, 96)),
+                  ),
+                  child: CheckboxListTile(
+                    title: Text(
+                      'Publish Article',
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.white,
+                      ),
+                    ),
+                    value: _isPublished,
+                    onChanged: (bool? value) {
+                      setState(() {
+                        _isPublished = value!;
+                      });
+                    },
+                    checkColor: Color.fromARGB(255, 29, 43, 54),
+                    activeColor: Colors.white,
+                    overlayColor: WidgetStateProperty.all(Colors.white),
+                    controlAffinity: ListTileControlAffinity.leading,
+                  ),
+                ),
+                const SizedBox(height: 20),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 20),
                   child: Row(
