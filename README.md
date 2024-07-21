@@ -70,25 +70,25 @@ This product allows you to edit and create Articles, Organizations, News, as wel
 
 - you can create an article
 - then you are taken to a page where you need to set the **title**, **tags** and main **body** using **rich text editor**.
-- the article appears in a list, where you can **change** the article by clicking on the **pen icon** or **delete** it by clicking on the **trash icon**.
+- the article appears in a list, where you can **change** the article by clicking on the **it**, **delete** it by clicking on the **trash icon**, **view** by clicking on the **view icon** or **publish/unpublish** by clicking on **world icon**.
 
 ### Organizations
 
 - you can create an organization
 - then you are taken to a page where you need to set the **name**, **logo and source links**, **categories** (you can select existing ones, or set custom), **countries** (you can select existing ones, or set custom) and **description**.
-- the organization appears in a list, where you can **change** it by clicking on the **pen icon** or **delete** it by clicking on the **trash icon**
+- the organization appears in a list, where you can **change** it by clicking on the **it**, **delete** it by clicking on the **trash icon**, **view** by clicking on the **view icon** or **publish/unpublish** by clicking on **world icon**.
 
 ### News
 
 - you can create an news
 - then you are taken to a page where you need to set the **title**, **image and source links**, **tags** and **description**.
-- the news appears in a list, where you can **change** it by clicking on the **pen icon** or **delete** it by clicking on the **trash icon**
+- the news appears in a list, where you can **change** it by clicking on the **it**, **delete** it by clicking on the **trash icon**, **view** by clicking on the **view icon** or **publish/unpublish** by clicking on **world icon**
 
 ### Requests
 
 - you can **answer** on request by clicking on the **message icon**
 - then you are taken to a page where you can answer on it as article, so you can change **title**, specify **tags** and main **body** using **rich text editor**
-- after saving you can delete request or do it on Requests page by clicking on the **trash icon**
+- after saving you can delete request or do it on Requests page by clicking on the **cross icon**
 
 ---
 
