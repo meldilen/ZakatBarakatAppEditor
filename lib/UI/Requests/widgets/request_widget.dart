@@ -105,9 +105,38 @@ class _RequestWidgetState extends State<RequestWidget> {
                     // ),
                     IconButton(
                         onPressed: () {
-                          closeRequest(widget.request.id, context);
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text(
+                                    'Are you sure you want to close this request?'),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      closeRequest(widget.request.id, context);
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: const Text('Close',
+                                        style: TextStyle(
+                                            color: Colors.red, fontSize: 15)),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: const Text('Cancel',
+                                        style: TextStyle(
+                                            color: Colors.grey, fontSize: 15)),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
                         },
-                        icon: Icon(Icons.close, color: Colors.white)),
+                        icon: Icon(Icons.close, color: Colors.white),
+                        tooltip: "Close",
+                        ),
                   ],
                 ),
               ],
