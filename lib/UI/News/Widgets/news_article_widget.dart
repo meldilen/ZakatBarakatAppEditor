@@ -1,6 +1,7 @@
 import 'package:editor/providers/news_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class NewsWidget extends StatefulWidget {
   final NewsViewModel newsArticle;
@@ -12,6 +13,15 @@ class NewsWidget extends StatefulWidget {
 }
 
 class _NewsWidgetState extends State<NewsWidget> {
+
+  void _launchURL() async {
+    if (await canLaunchUrl(Uri.parse(widget.newsArticle.sourceLink))) {
+      await launchUrl(Uri.parse(widget.newsArticle.sourceLink));
+    } else {
+      throw 'Could not launch ${widget.newsArticle.sourceLink}';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -89,6 +99,12 @@ class _NewsWidgetState extends State<NewsWidget> {
                 const SizedBox(width: 10),
                 Row(
                   children: [
+                    IconButton(
+                      onPressed: _launchURL,
+                      icon: Icon(Icons.remove_red_eye_rounded,
+                          color: Colors.white),
+                      tooltip: "View source",
+                    ),
                     IconButton(
                       onPressed: () {
                         showDialog(

@@ -1,6 +1,7 @@
 import 'package:editor/providers/organization_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class OrganizationWidget extends StatefulWidget {
   final OrganizationViewModel organization;
@@ -12,6 +13,14 @@ class OrganizationWidget extends StatefulWidget {
 }
 
 class _OrganizationWidgetState extends State<OrganizationWidget> {
+
+  void _launchURL() async {
+    if (await canLaunchUrl(Uri.parse(widget.organization.link))) {
+      await launchUrl(Uri.parse(widget.organization.link));
+    } else {
+      throw 'Could not launch ${widget.organization.link}';
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -91,6 +100,12 @@ class _OrganizationWidgetState extends State<OrganizationWidget> {
                 const SizedBox(width: 10),
                 Row(
                   children: [
+                    IconButton(
+                      onPressed: _launchURL,
+                      icon: Icon(Icons.remove_red_eye_rounded,
+                          color: Colors.white),
+                      tooltip: "View source",
+                    ),
                     IconButton(
                       onPressed: () {
                         showDialog(
