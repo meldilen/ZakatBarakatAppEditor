@@ -14,7 +14,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          token: ${{ secrets.GH_PAGES_DEPLOY }}
+          token: ${{ secrets.GH_PAT }}
 
       - uses: subosito/flutter-action@v2
         with:
