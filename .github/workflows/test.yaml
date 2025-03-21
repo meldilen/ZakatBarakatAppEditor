@@ -12,19 +12,24 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
+      # Шаг 1: Загрузить код с использованием вашего токена
       - uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GH_PAGES_DEPLOY }}  # Используйте ваш токен здесь
 
+      # Шаг 2: Установить Flutter
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
           flutter-version: 3.22.2
 
+      # Шаг 3: Установить зависимости
       - run: flutter pub get
 
-      - run: flutter build web
+      # Шаг 4: Собрать проект
+      - run: flutter build web --release --base-href /editor/
 
+      # Шаг 5: Деплой на GitHub Pages
       - uses: bluefireteam/flutter-gh-pages@v7
         with:
           baseHref: /editor/
-
-          githubToken: ${{ secrets.GH_PAGES_DEPLOY }}
