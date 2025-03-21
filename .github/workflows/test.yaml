@@ -26,4 +26,4 @@ jobs:
       - uses: bluefireteam/flutter-gh-pages@v7
         with:
           baseHref: /editor/
-          githubToken: ${{ secrets.GH_PAT }}
+          githubToken: ${{ secrets.GH_PAGES_DEPLOY }}
